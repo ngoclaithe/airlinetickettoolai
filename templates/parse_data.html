@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Parser</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/account.css">
+    <link rel="stylesheet" href="../../static/css/base.css">
+    <link rel="stylesheet" href="../../static/css/sidenav.css">
+    <script type="text/javascript" src="{{ url_for('static', filename='script/menu.js') }}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+    {% if user_id %}
+    {% include 'sidebar.html' %}
+    {% endif %}
+    <div class="container">
+        <div class="left-side">
+            <h2>Input Booking Data</h2>
+            <form id="myForm" method="post" action="/parsedata">
+                <textarea name="data" id="bookingData" placeholder="Enter booking data here..."></textarea>
+                <label for="logo_ticket">Logo hãng máy bay</label>
+                <select name="logo_ticket" id="logo_ticket">
+                    <option value="vna" selected>VietNam Airlines</option>
+                    <option value="bamboo">Bamboo Airway</option>
+                    <option value="vietjet">Vietjet</option>
+                </select>
+                <label for="imageUpload">Upload logo</label>
+                <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none;">
+                <button type="button" onclick="document.getElementById('imageUpload').click();">Chọn ảnh</button>
+
+                <input type="submit" value="Parse Data">
+
+            </form>
+
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+        <div class="right-side">
+            <h2>Parsed Booking Data</h2>
+            {% if booking %}
+            <table>
+                <tr>
+                    <th>Information</th>
+                    <th>Detail</th>
+                    <th>Time</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>Booking Reference</td>
+                    <td>{{ booking.booking_ref }}</td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="booking_ref" checked> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>Passenger Name</td>
+                    <td>
+                        <ul>
+                            {% for name in booking.passenger_name %}
+                            <li>{{ name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="passenger_name" checked > -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reservation Status</td>
+                    <td>{{ booking.reservation_status }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="reservation_status" checked></td>
+                </tr>
+                <tr>
+                    <td>Ticket</td>
+                    <td>
+                        <ul>
+                            {% for ticket in booking.ticket %}
+                            <li>{{ ticket }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="ticket_status" checked> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>Flight 1</td>
+                    <td>{{ booking.flight1.des }}</td>
+                    <td>{{ booking.flight1.des_time }}</td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_des" checked></td>
+                </tr>
+                <tr>
+                    <td>Departure</td>
+                    <td>
+                        {{ booking.flight1.departure_place }}
+                        {% if booking.flight1.departure_terminal %}
+                        {{ booking.flight1.departure_terminal }}
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.flight1.departure_time }}</td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_departure_place" checked></td>
+                </tr>
+                <tr>
+                    <td>Arrival</td>
+                    <td>
+                        {{ booking.flight1.arrival_place }}
+                        {% if booking.flight1.arrival_terminal %}
+                        {{ booking.flight1.arrival_terminal }}
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.flight1.arrival_time }}</td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_arrival_place" checked></td>
+                </tr>
+                <tr>
+                    <td>Duration</td>
+                    <td>{{ booking.flight1.duration }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_duration" checked></td>
+                </tr>
+                <tr>
+                    <td>Baggage</td>
+                    <td>{{ booking.flight1.baggage }}</td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="flight1_baggage" checked> -->
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Meal</td>
+                    <td>{{ booking.flight1.meal }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_meal" checked></td>
+
+                </tr>
+                <tr>
+                    <td>Non-stop</td>
+                    <td>{{ booking.flight1.nonstop }}</td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="flight1_nonstop" checked> -->
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Equipment</td>
+                    <td>{{ booking.flight1.equipment }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_equipment" checked></td>
+
+                </tr>
+                <!-- <tr>
+                    <td>Economy</td>
+                    <td>{{ booking.flight1.economy_class }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_economy_class" checked></td>
+                </tr> -->
+                <tr>
+                    <td>Flight 2</td>
+                    <td>{{ booking.flight2.des }}</td>
+                    <td>{{ booking.flight2.des_time }}</td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_des" checked></td>
+
+                </tr>
+                <tr>
+                    <td>Departure</td>
+                    <td>
+                        {{ booking.flight2.departure_place }}
+                        {% if booking.flight2.departure_terminal %}
+                        {{ booking.flight2.departure_terminal }}
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.flight2.departure_time }}</td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_departure_place" checked></td>
+                </tr>
+                <tr>
+                    <td>Arrival</td>
+                    <td>
+                        {{ booking.flight2.arrival_place }}
+                        {% if booking.flight2.arrival_terminal %}
+                        {{ booking.flight2.arrival_terminal }}
+                        {% endif %}
+                    </td>
+                    <td>{{ booking.flight2.arrival_time }}</td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_arrival_place" checked></td>
+                </tr>
+                <tr>
+                    <td>Duration</td>
+                    <td>{{ booking.flight2.duration }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_duration" checked></td>
+                </tr>
+                <tr>
+                    <td>Baggage</td>
+                    <td>{{ booking.flight2.baggage }}</td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="flight2_baggage" checked> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>Meal</td>
+                    <td>{{ booking.flight2.meal }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_meal" checked></td>
+                </tr>
+                <tr>
+                    <td>Non-stop</td>
+                    <td>{{ booking.flight2.nonstop }}</td>
+                    <td></td>
+                    <td>
+                        <!-- <input type="checkbox" class="select-checkbox" value="flight2_nonstop" checked> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>Equipment</td>
+                    <td>{{ booking.flight2.equipment }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_equipment" checked></td>
+                </tr>
+                <!-- <tr>
+                    <td>Economy</td>
+                    <td>{{ booking.flight2.economy_class }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_economy_class" checked></td>
+                </tr> -->
+            </table>
+            {% else %}
+            <p>No booking data parsed yet.</p>
+            {% endif %}
+            {% if missing_info %}
+            <span class="missing-info" style="margin-left: 10px; color: red;">{{ missing_info }}</span>
+            {% endif %}
+            <!-- <button class="print-btn" id="printButton">Print Ticket</button> -->
+            <div style="display: flex; align-items: center;">
+                <button class="print-btn" id="downloadAllButton">Download Ticket All</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="ticket-details">
+        {% if booking %}
+        {% for name in booking.passenger_name %}
+        <div class="ticket-container" id="airlineTicket">
+            <div class="ticket-header">
+                <img src="{{ url_for('static', filename=logo_path) }}" alt="Vietnam Airlines">
+                <button id="downloadButton" class="download-btn" onclick="downloadPDF('{{ name }}')">Download
+                    PDF</button>
+            </div>
+            <h2>Travel Itinerary</h2>
+            <div class="passenger-info">
+                <h3><strong>{{ name }}</strong></h3>
+                <div class="booking-info">
+                    <table style="border-collapse: collapse; width: 100%;border: 0; margin-top: 0;">
+                        <tr>
+                            <td style="border: 0; text-align: left; font-size: 10px; width: 50%;">
+                                Booking reference: <strong>{{ booking.booking_ref }}</strong>
+                            </td>
+                            <td style="border: 0;  text-align: left; font-size: 10px;">
+                                Date of Issue: {{ booking.date_issue }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0;  text-align: left; font-size: 10px; width: 50%;"></td>
+                            <td style="border: 0; text-align: left; font-size: 10px;">
+                                Place of Issue: Vn Agt VIETLUXTOUR, Ho Chi Minh City
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="flight-details">
+                <h3 class="flight-details-header">Flight Details</h3>
+                <table class="flight-table" style="table-layout: auto; width: 100%;">
+                    <tr>
+                        <th style="width: 5%; white-space: nowrap;"><strong>{{ booking.flight1.des.split('-')[0]
+                                }}</strong></th>
+                        <th class="operated-by" colspan="2">Operated by Vietnam Airlines</th>
+                        <th style="width: 10%;">{{ booking.flight1.equipment }}</th>
+                        <th colspan="2"></th>
+
+                        <th colspan="2">{{ booking.flight1.economy_class }}</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="width: 5%;">From</td>
+                        <td style="width: 25%;">{{ booking.flight1.departure_place }}</td>
+                        <td>{{ booking.flight1.departure_terminal }}</td>
+                        <td style="width: 3%; text-align: right;">Depart</td>
+                        <td style="width: 15%; text-align: left;">
+                            <!-- {{ booking.flight1.departure_time }} -->
+                        </td>
+                        <td>Status</td>
+                        <td>Confirmed</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>To</td>
+                        <td>{{ booking.flight1.arrival_place }}</td>
+                        <td></td>
+                        <td style="width: 3%; text-align: right;">Arrive</td>
+                        <td style="width: 15%; text-align: left;">
+                            <!-- {{ booking.flight1.arrival_time }} -->
+                        </td>
+                        <td>Stopover</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Flight Meal</td>
+                        <td>{{ booking.flight1.meal }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    {% if booking.flight2 and booking.flight2.des != '' %}
+                    <tr>
+                        <th style="width: 5%; white-space: nowrap;"><strong>{{ booking.flight2.des.split('-')[0]
+                                }}</strong></th>
+                        <th class="operated-by" colspan="2">Operated by Vietnam Airlines</th>
+                        <th style="width: 10%;">{{ booking.flight2.equipment }}</th>
+                        <th colspan="2"></th>
+
+                        <th colspan="2">{{ booking.flight2.economy_class }}</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="width: 5%;">From</td>
+                        <td style="width: 25%;">{{ booking.flight2.departure_place }}</td>
+                        <td>{{ booking.flight2.departure_terminal }}</td>
+                        <td style="width: 3%; text-align: right;">Depart</td>
+                        <td style="width: 15%; text-align: left;">
+                            <!-- {{ booking.flight2.departure_time }} -->
+                        </td>
+                        <td>Status</td>
+                        <td>Confirmed</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>To</td>
+                        <td>{{ booking.flight2.arrival_place }}</td>
+                        <td></td>
+                        <td style="width: 3%; text-align: right;">Arrive</td>
+                        <td style="width: 15%; text-align: left;">
+                            <!-- {{ booking.flight2.arrival_time }} -->
+                        </td>
+                        <td>Stopover</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Flight Meal</td>
+                        <td>{{ booking.flight2.meal }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function (event) {
+            const formData = new FormData(this);
+            fetch('/parsedata', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    console.log('Dữ liệu đã được gửi');
+                })
+                .catch(error => {
+                    console.error('Lỗi:', error);
+                });
+        });
+        var date_issue = "{{ booking.date_issue }}";
+        var flight1_departure_time = "{{ booking.flight1.departure_time }}";
+        var flight2_departure_time = "{{ booking.flight2.departure_time }}";
+        var flight1_arrival_time = "{{ booking.flight1.arrival_time }}";
+        var flight2_arrival_time = "{{ booking.flight2.arrival_time }}";
+
+        document.addEventListener("DOMContentLoaded", function () {
+            function formatFlightTime(flightTime, year) {
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
+                const dateTime = new Date(flightTime);
+                const dayName = days[dateTime.getDay()];
+                const day = dateTime.getDate();
+                const month = months[dateTime.getMonth()];
+                const time = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                return `${dayName}, ${day} ${month} ${year}, ${time}`;
+            }
+
+            function updateFlightDetails() {
+                const bookingDate = new Date(date_issue);
+                const year = bookingDate.getFullYear();
+
+                const flightTable = document.querySelector(".flight-details .flight-table");
+                const flight1DepartureCell = flightTable.querySelector("tr:nth-child(2) td:nth-child(6)");
+                if (flight1DepartureCell) {
+                    flight1DepartureCell.textContent = formatFlightTime(flight1_departure_time, year);
+                }
+
+                const flight1ArrivalCell = flightTable.querySelector("tr:nth-child(3) td:nth-child(6)");
+                if (flight1ArrivalCell) {
+                    flight1ArrivalCell.textContent = formatFlightTime(flight1_arrival_time, year);
+                }
+
+                {% if booking.flight2 and booking.flight2.des != '' %}
+                const flight2DepartureCell = flightTable.querySelector("tr:nth-child(6) td:nth-child(6)");
+                if (flight2DepartureCell) {
+                    flight2DepartureCell.textContent = formatFlightTime(flight2_departure_time, year);
+                }
+
+                const flight2ArrivalCell = flightTable.querySelector("tr:nth-child(7) td:nth-child(6)");
+                if (flight2ArrivalCell) {
+                    flight2ArrivalCell.textContent = formatFlightTime(flight2_arrival_time, year);
+                }
+                {% endif %}
+            }
+
+            updateFlightDetails();
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/overview.css">
+    <link rel="stylesheet" href="../../static/css/noti.css">
+    <link rel="stylesheet" href="../../static/css/base.css">   
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+    <div id="notification-popup" style="display: none;">
+        <table id="notification-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="notification-body">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <a href="/parsepage"><i class="fas fa-box-open"></i> Tách data</a>
+        <a href="/staff"><i class="fas fa-users"></i> Người dùng</a>
+    </div>
+
+    <div class="content" id="content">
+        <div class="card-container">
+            <h1>Tổng quan</h1>
+            <div class="main-content2">
+                <div id="chart-container">
+                    <canvas id="salesChart"></canvas>
+                </div>
+
+
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="../../static/script/script.js"></script>
+    <script>
+        const userName = "{{ user_name }}";
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+
+</html>

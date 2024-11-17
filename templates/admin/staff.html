@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý nhân viên</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/staff.css">
+    <link rel="stylesheet" href="../../static/css/noti.css">
+    <link rel="stylesheet" href="../../static/css/base.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="sidebar" id="sidebar">
+        <a href="/parsepage"><i class="fas fa-box-open"></i> Tách data</a>
+        <a href="/staff"><i class="fas fa-users"></i> Người dùng</a>
+    </div>
+
+    <div class="content" id="content">
+        <div class="card-container">
+            <div class="main-content">
+                <h1>Quản lý người dùng</h1>
+                <div class="form-group">
+                    <select id="reportSelect" class="form-control short">
+                        <option value="">Chọn</option>
+                        <option value="/list_staff">Danh sách người dùng</option>
+                    </select>
+                </div>
+                <div id="staff-table" class="table-responsive mt-3">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Mật khẩu</th>
+                                <th>Số điện thoại</th>
+                                <th>Loại tài khoản</th>
+                                <th>Câu hỏi bí mật</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="add-staff-btn" data-toggle="modal" data-target="#addStaffModal">+</div>
+    </div>
+
+    <div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStaffModalLabel">Thêm nhân viên</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStaffForm">
+                        <div class="form-group">
+                            <label for="name_staff">Tên người dùng</label>
+                            <input type="text" class="form-control" id="name_staff" name="name_staff" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="staff_email">Email</label>
+                            <input type="email" class="form-control" id="staff_email" name="staff_email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="staff_password">Password</label>
+                            <input type="password" class="form-control" id="staff_password" name="staff_password"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type_staff">Loại tài khoản</label>
+                            <input type="text" class="form-control" id="type_staff" name="type_staff" value="guest" readonly required>
+                        </div>                        
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="secret_question">Con vật yêu thích</label>
+                            <input type="text" class="form-control" id="secret_question" name="secret_question"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../static/script/staff.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.fonts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="../../static/script/script.js"></script>
+</body>
+
+</html>

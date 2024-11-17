@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .header {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .content {
+            font-size: 14px;
+        }
+
+        .footer {
+            font-size: 12px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #ticket-details h2 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        #ticket-details h3 {
+            margin-left: 4px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            font-size: 12px;
+            font-style: normal;
+        }
+
+        .booking-info {
+            margin-top: 0;
+        }
+
+        .ticket-container {
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .ticket-header img {
+            width: 250px;
+        }
+        .logo-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .logo-container img {
+            width: 250px;
+        }
+        .ticket-info {
+            margin-top: 20px;
+        }
+
+        .ticket-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ticket-info th,
+        .ticket-info td {
+            border: 1px solid #ddd;
+            padding: 8px;
+
+        }
+
+        .ticket-info th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        .print-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .print-btn:hover {
+            background-color: #45a049;
+        }
+
+        .flight-details {
+            margin-top: 20px;
+        }
+
+        h3.flight-details-header {
+            color: rgb(11, 106, 179);
+            border-bottom: 6px solid rgb(11, 106, 179);
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .flight-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .flight-table th,
+        .flight-table td {
+            padding: 4px;
+            text-align: left;
+            white-space: normal;
+            /* border: 1px solid #ddd; */
+            word-wrap: break-word;
+            border: none;
+            background-color: transparent;
+            font-size: 8px;
+        }
+
+        .flight-table th {
+            width: 15%;
+        }
+
+        .flight-table th.operated-by {
+            text-align: left;
+            width: 30%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="ticket-details">
+        <div class="ticket-container" id="airlineTicket">
+            <div class="ticket-header">
+                <div class="logo-container">
+                    {% if logo_base64 %}
+                        <img src="data:image/png;base64,{{ logo_base64 }}" alt="Vietnam Airlines">
+                    {% endif %}
+                    {% if logo_user %}
+                        <img src="data:image/png;base64,{{ logo_user }}" alt="User Logo">
+                    {% endif %}
+                </div>
+            </div>
+            <h2>Travel Itinerary</h2>
+            <div class="passenger-info">
+                <h3><strong>{{ booking.passenger_name[0] }}</strong></h3>
+                <div class="booking-info">
+                    <table style="border-collapse: collapse; width: 100%;border: 0; margin-top: 0;">
+                        <tr>
+
+                            <td style="border: 0; width: 50%;text-align: left; font-size: 10px;">
+                                Booking reference: <strong>{{ booking.booking_ref }}</strong>
+                            </td>
+
+                            <td style="border: 0;  text-align: left; font-size: 10px; ">
+                                Date of Issue: {{ booking.date_issue }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0; width: 50%; text-align: left; font-size: 10px;"></td>
+                            <td style="border: 0; text-align: left; font-size: 10px; ">
+                                Place of Issue: Vn Agt VIETLUXTOUR, Ho Chi Minh City
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="flight-details">
+                <h3 class="flight-details-header">Flight Details</h3>
+                <table class="flight-table" style="table-layout: auto; width: 100%;">
+                    <tr>
+                        
+                        <th style="width: 5%; white-space: nowrap;">
+                            {% if 'flight1_des' in selected_fields %}
+                            <strong>                            
+                            {{ booking.flight1.des.split('-')[0] }}
+                            </strong>
+                            {% endif %}
+                            </th>
+                        <th class="operated-by" colspan="2">
+                            {% if 'flight1_des' in selected_fields %}
+                            Operated by Vietnam Airlines
+                            {% endif %}
+                        </th>
+                        
+                        
+                        <th style="width: 10%;">
+                            {% if 'flight1_equipment' in selected_fields %}
+                            {{ booking.flight1.equipment }}
+                            {% endif %}
+                        </th>
+                        {% if 'flight1_economy_class' in selected_fields %}
+                        <th colspan="2"></th>
+                        <th colspan="2">{{ booking.flight1.economy_class }}</th>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td></td>                        
+                        <td style="width: 5%;">
+                            {% if 'flight1_departure_place' in selected_fields %}
+                            From
+                            {% endif %}
+                        </td>
+                        <td style="width: 25%;">
+                            {% if 'flight1_departure_place' in selected_fields %}
+                            {{ booking.flight1.departure_place }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'flight1_departure_place' in selected_fields %}
+                            {{ booking.flight1.departure_terminal }}
+                            {% endif %}
+                        </td>
+                        <td style="width: 3%; text-align: right;">
+                            {% if 'flight1_departure_place' in selected_fields %}
+                            Depart</td>
+                            {% endif %}
+                        <td style="width: 15%; text-align: left;">
+                            {% if 'flight1_departure_place' in selected_fields %}
+                            {{ booking.flight1.departure_time }}
+                            {% endif %}
+                        </td>                        
+
+                        <td>Status</td>                        
+                        <td>Confirmed</td>
+
+                    </tr>
+                    <tr>
+                        <td></td>                        
+                        <td>
+                            {% if 'flight1_arrival_place' in selected_fields %}
+                            To
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'flight1_arrival_place' in selected_fields %}
+                            {{ booking.flight1.arrival_place }}
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td style="width: 3%; text-align: right;">
+                            {% if 'flight1_arrival_place' in selected_fields %}
+                            Arrive
+                            {% endif %}
+                        </td>
+                        <td style="width: 15%; text-align: left;">
+                            {% if 'flight1_arrival_place' in selected_fields %}
+                            {{ booking.flight1.arrival_time }}
+                            {% endif %}
+                        </td>                        
+                        <td>Stopover</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        {% if 'flight1_meal' in selected_fields %}
+                        <td>Flight Meal</td>
+                        <td>{{ booking.flight1.meal }}</td>
+                        {% endif %}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    {% if booking.flight2 and booking.flight2.des != '' %}
+                    <tr>
+                        <th style="width: 5%; white-space: nowrap;">
+                            {% if 'flight2_des' in selected_fields %}
+                            <strong>{{ booking.flight2.des.split('-')[0]
+                                }}
+                            </strong>
+                            {% endif %}
+                        </th>
+                        <th class="operated-by" colspan="2">
+                            {% if 'flight2_des' in selected_fields %}
+                            Operated by Vietnam Airlines
+                            {% endif %}
+                        </th>
+                        <th style="width: 10%;">
+                            {% if 'flight2_equipment' in selected_fields %}
+                            {{ booking.flight2.equipment }}
+                            {% endif %}
+                        </th>
+                        {% if 'flight2_economy_class' in selected_fields %}
+                        <th colspan="2"></th>
+                        <th colspan="2">{{ booking.flight2.economy_class }}</th>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="width: 5%;">
+                            {% if 'flight2_departure_place' in selected_fields %}
+                            From
+                            {% endif %}
+                        </td>
+                        <td style="width: 25%;">
+                            {% if 'flight2_departure_place' in selected_fields %}
+                            {{ booking.flight2.departure_place }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'flight2_departure_place' in selected_fields %}
+                            {{ booking.flight2.departure_terminal }}
+                            {% endif %}
+                        </td>
+                        <td style="width: 3%; text-align: right;">
+                            {% if 'flight2_departure_place' in selected_fields %}
+                            Depart
+                            {% endif %}
+                        </td>
+                        <td style="width: 15%; text-align: left;">
+                            {% if 'flight2_departure_place' in selected_fields %}
+                            {{ booking.flight2.departure_time }}
+                            {% endif %}
+                        </td>
+
+                        <td>Status</td>
+                        <td>Confirmed</td>
+
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            {% if 'flight2_arrival_place' in selected_fields %}                            
+                            To
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'flight2_arrival_place' in selected_fields %} 
+                            {{ booking.flight2.arrival_place }}
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td style="width: 3%; text-align: right;">
+                            {% if 'flight2_arrival_place' in selected_fields %} 
+                            Arrive
+                            {% endif %}
+                        </td>
+                        <td style="width: 15%; text-align: left;">
+                            {% if 'flight2_arrival_place' in selected_fields %} 
+                            {{ booking.flight2.arrival_time }}
+                            {% endif %}
+                        </td>
+                        
+                        <td>Stopover</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        {% if 'flight2_equipment' in selected_fields %}
+                        <td></td>
+                        <td>Flight Meal</td>
+                        <td>{{ booking.flight2.meal }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        {% endif %}
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

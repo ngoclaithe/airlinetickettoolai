@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý tài khoản</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/account.css">
+    <link rel="stylesheet" href="../../static/css/base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <style>
+        .user-info {
+            margin-top: 180px;
+            margin-left: 40%;
+            /* margin: 0 auto; */
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info form {
+            margin-top: 20px;
+        }
+
+        input[type="password"],
+        input[type="text"] {
+            width: calc(100% - 60px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 200px;
+            margin-left: 60px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .logout-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'navbar.html' %}
+    <div class="sidebar" id="sidebar">
+        <a href="/parsepage"><i class="fas fa-tachometer-alt"></i> Tách data</a>
+        <a href="/staff"><i class="fas fa-users"></i> Nhân viên</a>
+    </div>
+    <!-- <div class="content" id="content"> -->
+        <!-- <div class="card-container"> -->
+        <!-- <div class="main-content"> -->
+        <div class="user-info">
+            <h1>Thông tin tài khoản</h1>
+            <label for="username">Tên người dùng:</label>
+            <p id="username" style="font-weight: bold; font-size: 18px; color: #333;">{{ user_name }}</p>
+            <label for="usertype">Loại tài khoản:</label>
+            <p id="usertype" style="font-weight: bold; font-size: 18px; color: #333;">{{ user_type }}</p>
+            <label for="email">Email:</label>
+            <p id="email" style="font-size: 16px; color: #333;">{{ email }}</p>
+            <form id="change-password-form">
+                <label for="old_password" style="font-size: 18px; color: #333;">Mật khẩu cũ:</label>
+                <input type="password" id="old_password" name="old_password" required><br>
+                <label for="new_password" style="font-size: 18px; color: #333;">Mật khẩu mới:</label>
+                <input type="password" id="new_password" name="new_password" required><br>
+                <button type="submit">Thay đổi mật khẩu</button>
+                <p class="success-message">{{ password_message }}</p>
+            </form>
+            <form id="logout-form" method="get" action="/logout">
+                <button type="submit" class="logout-button">Đăng xuất</button>
+            </form>
+            <!-- </div> -->
+        </div>
+        <!-- </div> -->
+    <!-- </div> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.fonts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        var userType = "{{user_type}}";
+        console.log(userType);
+        const notification2 = document.getElementById('notification-icon');
+        document.getElementById("navbarBrand").addEventListener("click", function (event) {
+            event.preventDefault();
+            if (userType === "admin") {
+                window.location.href = '/overview';
+                notification2.style.display = 'block';
+            } else {
+                window.location.href = '/staff_timekeeping';
+                notification2.style.display = 'none';
+            }
+        });
+        $(document).ready(function () {
+            var successMessage = sessionStorage.getItem('toastr_success');
+            var errorMessage = sessionStorage.getItem('toastr_error');
+            var toastrTitle = sessionStorage.getItem('toastr_title');
+
+            if (successMessage) {
+                toastr.success(successMessage, toastrTitle);
+                sessionStorage.removeItem('toastr_success');
+                sessionStorage.removeItem('toastr_title');
+            }
+
+            if (errorMessage) {
+                toastr.error(errorMessage, toastrTitle);
+                sessionStorage.removeItem('toastr_error');
+                sessionStorage.removeItem('toastr_title');
+            }
+        });
+
+        document.getElementById("change-password-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/change_password', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        // alert("Đã thay đổi mật khẩu thành công");
+                        sessionStorage.setItem('toastr_success', 'Đã thay đổi mật khẩu thành công!');
+                        sessionStorage.setItem('toastr_title', 'Thành công');
+                        location.reload();
+                    } else {
+                        // alert("Thay đổi mật khẩu không thành công");
+                        sessionStorage.setItem('toastr_error', 'Thay đổi mật khẩu không thành công!');
+                        sessionStorage.setItem('toastr_title', 'Thất bại');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById("logout-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            fetch(this.action, {
+                method: 'GET'
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        toastr.success('Đăng xuất thành công!', 'Thành công');
+                        setTimeout(function () {
+                            window.location.href = '/login_page';
+                        }, 2000);
+                    } else {
+                        toastr.error('Đăng xuất không thành công!', 'Thất bại');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+        document.getElementById('toggleSidebar').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+        });
+        function handleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const toggleSidebar = document.getElementById('toggleSidebar');
+
+            function toggleSidebarVisibility(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+            }
+
+            if (userType === "admin") {
+                toggleSidebar.style.display = 'none';
+                sidebar.style.display = 'block';
+
+                toggleSidebar.addEventListener('click', toggleSidebarVisibility);
+            } else {
+                toggleSidebar.style.display = 'none';
+                sidebar.style.display = 'none';
+            }
+        }
+
+        handleSidebar();
+
+        
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/static/img/background_dash2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+}
+
+
+.notification-icon {
+    width: 24px;
+    height: auto;
+}
+
+.account-icon {
+    width: 24px;
+    height: auto;
+}
+
+.content {
+    margin-left: 15%;
+    margin-top: 80px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    display: flex;
+}
+
+.content.collapsed {
+    margin-left: 0;
+}
+
+.card-container {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-content2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column; 
+    flex-wrap: wrap;
+    gap: 20px;
+}
+input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.6; 
+}
+input[type="submit"] {
+    margin-top: 10px; 
+}
+#logo_ticket {
+    width: 100%; 
+    padding: 10px; 
+    font-size: 16px; 
+    border-radius: 8px; 
+    border: 2px solid #ccc; 
+    background-color: #f9f9f9; 
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    transition: border-color 0.3s ease, background-color 0.3s ease; 
+}
+
+#logo_ticket:focus {
+    border-color: #007bff; 
+    background-color: #e7f3ff; 
+    outline: none;
+}
+
+#bookingData {
+    width: 100%; 
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    margin-bottom: 15px;
+    resize: vertical; 
+}
