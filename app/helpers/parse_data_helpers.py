@@ -66,36 +66,6 @@ def check_flight_pattern(data1, data2):
     print(missing_info)
     return missing_info
 
-# def extract_flight_info(data):
-#     flight_info = {}
-#     flight_info['Description'] = data[0].replace('FLIGHT', '').strip()
-#     flight_info['Equipment'] = data[2].replace('EQUIPMENT:', '').strip()
-
-#     lines = data[1].strip().split('\n')
-    
-#     for line in lines:
-#         line = line.strip()
-        
-#         if line.startswith('DEPARTURE:'):
-#             flight_info['Departure'] = line.replace('DEPARTURE:', '').strip()
-#         elif line.startswith('ARRIVAL:'):
-#             arrival_info = line.replace('ARRIVAL:', '').strip()
-#             if 'FLIGHT BOOKING REF' in arrival_info:
-#                 flight_info['Arrival'] = arrival_info.split('FLIGHT BOOKING REF')[0].strip()
-#             else:
-#                 flight_info['Arrival'] = arrival_info
-#         elif 'DURATION:' in line:
-#             parts = line.split('DURATION:')
-#             flight_info['Economy Class'] = parts[0].strip().replace('RESERVATION CONFIRMED, ', '')
-#             flight_info['Duration'] = parts[1].strip()
-#         elif 'BAGGAGE ALLOWANCE:' in line:
-#             flight_info['Baggage'] = line.replace('BAGGAGE ALLOWANCE:', '').strip()
-#         elif 'MEAL:' in line:
-#             flight_info['Meal'] = line.replace('MEAL:', '').strip()
-#         elif 'NON STOP' in line:
-#             flight_info['NonStop'] = line.replace('NON STOP', '').strip()
-
-#     return flight_info
 def extract_flight_info(data):
     flight_info = {}
     flight_info['Description'] = data[0].replace('FLIGHT', '').strip()

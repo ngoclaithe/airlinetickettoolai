@@ -2,8 +2,8 @@ from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 import os
-from model import Flight
-from helper import abbreviated_place_name
+from ..models.flight import Flight
+from .parse_data_helpers import abbreviated_place_name
 import zipfile
 from tempfile import TemporaryDirectory
 import base64
@@ -44,14 +44,19 @@ class PDFManager:
 
     @staticmethod
     def print_pdf(booking, passenger_name, logo_path, selected_fields=None, logo_user=None):
-
+        current_dir = os.path.dirname(__file__) 
         PDFManager.update_flight_times(booking)
         pdf_filename = PDFManager.create_pdf_filename(passenger_name, booking)
         pdf_path = os.path.abspath(pdf_filename)
+        logo_dir = os.path.join(current_dir, '..')  
+        logo_path_dir = os.path.join(logo_dir, logo_path)
+        logo_base64 = PDFManager.get_image_base64(logo_path_dir)
+        print(logo_base64)
+        
+        template_dir = os.path.join(current_dir, '..')  
+        template_name = 'template_ticket.html'  
+        template_path = os.path.join(template_dir, template_name)
 
-        logo_base64 = PDFManager.get_image_base64(logo_path)
-
-        template_path = os.path.abspath("template_ticket.html")
         html_content = PDFManager.render_pdf_template(template_path, booking, logo_base64, selected_fields,logo_user=logo_user )
 
         HTML(string=html_content).write_pdf(pdf_path)
@@ -60,7 +65,7 @@ class PDFManager:
 
     @staticmethod
     def render_pdf_template(template_path, booking, logo_base64, selected_fields=None, logo_user=None ):
-        env = Environment(loader=FileSystemLoader(os.path.dirname(template_path)))
+        env = Environment(loader=FileSystemLoader(os.path.dirname(template_path))) 
         template = env.get_template(os.path.basename(template_path))
         return template.render(booking=booking, logo_base64= logo_base64, selected_fields=selected_fields, logo_user=logo_user)
 

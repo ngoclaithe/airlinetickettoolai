@@ -1,17 +1,8 @@
-from flask import (
-    Flask,
-    url_for,
-    request,
-    render_template,
-    send_from_directory,
-    jsonify,
-    send_file,
-    session,
-    redirect,
-)
-from model import Booking, Flight
-from waitress import serve
-from helper import (
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response
+from ..models.flight import Flight
+from ..models.booking import Booking
+from ..models.register import Register
+from ..helpers.parse_data_helpers import (
     parse_description,
     parse_departure,
     parse_arrival,
@@ -21,52 +12,14 @@ from helper import (
     abbreviate_airport_name,
     md5_hash,
 )
-import re
-import os
-from weasyprint import HTML
-from datetime import datetime
-import threading
-from flask import Response
-import hashlib
-from db import db, Register
 from datetime import timedelta
-import pytz
-from pdf_manager import PDFManager
-import zipfile
-import tempfile
-from flask import after_this_request
-from collections import defaultdict
-import base64
+import re
+from ..helpers.pdf_manager import PDFManager
+import os
 
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
-db_path = "dblfihgt.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.abspath(db_path)}"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static\\uploads')
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-db.init_app(app)
+bp = Blueprint('booking', __name__)
 
-# global_booking = None
-logo_path = "vietnam-airline-logo.png"
-
-user_requests = defaultdict(int) 
-MAX_REQUESTS_PER_DAY = 5 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-if not os.path.exists(db_path):
-    print("Database not found. Creating new database.")
-    with app.app_context():
-        db.create_all()
-else:
-    print("Database already exists.")
-
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-@app.route("/parsepage", methods=["GET"])
+@bp.route('/parse', methods=['GET'])
 def parse_page():
     if "user_id" in session and session["usertype"] in ["admin", "guest"]:
         user_id = session.get("user_id")  
@@ -78,7 +31,7 @@ def parse_page():
             return "Không tìm thấy thông tin người dùng"
     else:
         return redirect(url_for("login"))
-@app.route("/parsedata", methods=["POST"])
+@bp.route("/parsedata", methods=["POST"])
 def parse_data():
     ip_address = request.remote_addr
     is_logged_in = "user_id" in session and session["usertype"] in ["admin", "guest"]
@@ -111,6 +64,7 @@ def parse_data():
                     return jsonify({"error": "Ảnh tải lên không hợp lệ, chỉ chấp nhận các định dạng như .jpg, .png, .jpeg"}), 400
             else:
                 session['uploaded_image_path'] = None
+                filename = None
 
 
             form_data = request.form.get("data", "").replace("\r\n", "\n")
@@ -227,8 +181,7 @@ def parse_data():
         except Exception as e:
             print(f"Lỗi: {e}")
             return jsonify({"error": "Lỗi xử lý dữ liệu"}), 500
-
-@app.route("/download_pdf", methods=["POST"])
+@bp.route("/download_pdf", methods=["POST"])
 def download_pdf():
     global logo_path
 
@@ -276,12 +229,13 @@ def download_pdf():
     )
 
     try:
+        print(pdf_path)
         os.remove(pdf_path)
     except Exception as e:
         print(f"Error removing file: {e}")
 
     return response
-@app.route("/download_all_pdf", methods=["POST"])
+@bp.route("/download_all_pdf", methods=["POST"])
 def download_all_pdf():
     global logo_path
     booking_data = session.get('booking')
@@ -298,72 +252,3 @@ def download_all_pdf():
         as_attachment=True,
         download_name='all_tickets.zip',
     )
-@app.route("/")
-def home():
-    user_id = session.get("user_id")  
-    usertype = session.get("usertype")  
-    booking = Booking(None, None, [], None, [], Flight(), Flight())
-    return render_template("parse_data.html", booking=booking, user_id=user_id, usertype=usertype)
-@app.route("/login_page")
-def login_page():
-    return render_template("login.html")
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        print(request.form["password"])
-        email = request.form["email"]
-        password = md5_hash(request.form["password"])
-        user = Register.query.filter_by(email=email, password=password).first()
-        print(email)
-
-        if user:
-            session["user_id"] = user.id
-            session["usertype"] = user.usertype
-            session.permanent = True
-            if user.usertype == "guest":
-                session.permanent = True 
-                app.permanent_session_lifetime = timedelta(hours=1) 
-            elif user.usertype == "admin":
-                session.permanent = True
-                app.permanent_session_lifetime = timedelta(days=1)
-            if user.usertype == "admin":
-                return redirect(url_for("admin_overview"))
-            elif user.usertype in ["guest"]:
-                return redirect(url_for("parse_page"))
-        else:
-            return "Notok", 400
-    return render_template("login.html")
-@app.route("/account", methods=["GET"])
-def admin_account():
-    if "user_id" in session and session["usertype"] in ["admin", "guest"]:
-        user = Register.query.filter_by(id=session["user_id"]).first()
-        if user:
-            return render_template("admin/account.html", user_name=user.user, user_type=user.usertype, email=user.email)
-        else:
-            return "Không tìm thấy thông tin người dùng"
-    else:
-        return redirect(url_for("login"))
-@app.route("/logout", methods=["GET"])
-def logout():
-    session.clear()
-    return "OK", 200
-@app.before_request
-def limit_guest_session():
-    if "user_id" in session and session["usertype"] == "guest":
-        timezone = pytz.timezone('Asia/Ho_Chi_Minh')
-        now = datetime.now(timezone)
-
-        if 'last_activity' not in session:
-            session['last_activity'] = now
-        else:
-            last_activity = session['last_activity'].astimezone(timezone)
-            if (now - last_activity) > timedelta(hours=1):
-                session.pop('user_id', None)
-                session.pop('usertype', None)
-                return redirect(url_for("login_page"))
-
-        session['last_activity'] = now
-
-if __name__ == "__main__":
-    # app.run(host="0.0.0.0", port=5000, debug=True)
-    serve(app, host='0.0.0.0', port=5000)

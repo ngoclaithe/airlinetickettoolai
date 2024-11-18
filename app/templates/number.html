@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Parser</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/account.css">
+    <link rel="stylesheet" href="../../static/css/base.css">
+    <link rel="stylesheet" href="../../static/css/sidenav.css">
+    <link rel="stylesheet" href="../../static/css/toastr-alert.css">
+    <script type="text/javascript" src="{{ url_for('static', filename='script/menu.js') }}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+    {% if user_id %}
+    {% include 'sidebar.html' %}
+    {% endif %}
+    <div class="container">
+        <div class="left-side">
+            <h2>Chuyển số sang chữ</h2>
+            <form id="myFormNumber" onsubmit="updateNumberToTextData(event)">
+                <textarea name="dataNumberToText" id="numberToTextData" placeholder="Nhập số ...."></textarea>
+                <input type="submit" value="Thực hiện">
+            </form>
+            <div>
+                <textarea name="data" id="resultnumberToTextData"></textarea>
+            </div>
+        </div>
+        <div class="right-side">
+            <h2>Tính VAT</h2>
+            <form id="myFormVAT" onsubmit="updateVATData(event)">
+                <label for="numberVAT">Số tiền</label>
+                <input type="text" id="numberVAT" name="numberVAT">
+                <label for="%VAT">% VAT</label>
+                <input type="text" id="%VAT" name="%VAT">
+                <div>
+                    <input type="radio" id="VATxuoi" name="VATType" value="VATxuoi">
+                    <label for="VATxuoi">Tính VAT xuôi</label>
+                    <input type="radio" id="VATnguoc" name="VATType" value="VATnguoc">
+                    <label for="VATnguoc">Tính VAT ngược</label>
+                </div>
+                <input type="submit" value="Thực hiện">
+            </form>
+            <div>
+                <textarea name="data" id="resultVATData"></textarea>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.fonts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        const user_id = "{{user_id}}";
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        async function updateNumberToTextData(event) {
+            event.preventDefault();
+
+            const formData = new FormData(document.getElementById('myFormNumber'));
+
+            const response = await fetch('/numbertotext', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('resultnumberToTextData').innerText = data.result + ' đồng';
+                console.log(data);
+            } else {
+                const errorData = await response.json();
+                toastr.error(errorData.error || 'Có lỗi xảy ra', 'Lỗi');
+            }
+        }
+
+        async function updateVATData(event) {
+            event.preventDefault();
+
+            const formData = new FormData(document.getElementById('myFormVAT'));
+
+            const response = await fetch('/cacul_VAT', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('resultVATData').innerText = data.result;
+                console.log(data);
+            } else {
+                const errorData = await response.json();
+                toastr.error(errorData.error || 'Có lỗi xảy ra', 'Lỗi');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

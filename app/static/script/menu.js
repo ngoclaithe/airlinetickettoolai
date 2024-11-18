@@ -6,25 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     overlay.className = 'overlay';
     document.body.appendChild(overlay);
 
-    const menuItems = document.querySelectorAll('.menu-items li a');
-    const submenuSo = document.getElementById('submenu-so');
-
-    menuItems.forEach((menuItem) => {
-        menuItem.addEventListener('click', function (e) {
-            e.preventDefault(); 
-            handleMenuClick(menuItem.textContent.trim()); 
-        });
-    });
-
-    function handleMenuClick(menuText) {
-        // Toggle submenu visibility when clicking "Chuyển đổi số"
-        if (menuText === 'Chuyển đổi số') {
-            submenuSo.style.display = submenuSo.style.display === 'none' ? 'block' : 'none';
-        } else {
-            submenuSo.style.display = 'none'; 
-        }
-    }
-
     menuBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         toggleSidebar();
@@ -59,6 +40,27 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             closeSidebar();
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const accountIcon = document.getElementById('accountIcon');
+    const detailAccount = document.getElementById('detail-account');
+
+    console.log(user_id);
+
+    accountIcon.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (user_id == "None") {
+            window.location.href = loginUrl;
+        } else {
+            detailAccount.style.display = detailAccount.style.display === 'none' ? 'block' : 'none';
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!detailAccount.contains(e.target) && !accountIcon.contains(e.target)) {
+            detailAccount.style.display = 'none';
         }
     });
 });

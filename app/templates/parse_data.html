@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../../static/css/account.css">
     <link rel="stylesheet" href="../../static/css/base.css">
     <link rel="stylesheet" href="../../static/css/sidenav.css">
-    <script type="text/javascript" src="{{ url_for('static', filename='script/menu.js') }}"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -232,8 +231,10 @@
     </div>
     <div id="ticket-details"></div>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
-
     <script>
+        const user_id = "{{ user_id }}";
+        const loginUrl = "{{ url_for('auth_blueprint.login') }}";
+        console.log(loginUrl);
         async function updateBookingData(event) {
             event.preventDefault();
 
@@ -447,7 +448,7 @@
             return `${dayName}, ${day} ${month} ${year}, ${time}`;
         }
     </script>
-
+    <script type="text/javascript" src="{{ url_for('static', filename='script/menu.js') }}"></script>
 </body>
 
 </html>
