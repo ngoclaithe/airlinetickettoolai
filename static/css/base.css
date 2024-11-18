@@ -86,3 +86,12 @@ input[type="submit"] {
     margin-bottom: 15px;
     resize: vertical; 
 }
+.logo-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.logo-container img {
+    width: 200px;
+}

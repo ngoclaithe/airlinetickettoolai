@@ -35,6 +35,26 @@ class Flight:
         self.arrival_time = arrival_time
         self.des_time = des_time
         self.economy_class = economy_class
+    @staticmethod
+    def from_dict(data):
+        return Flight(
+            des=data.get("des", ""),
+            departure=data.get("departure", ""),
+            arrival=data.get("arrival", ""),
+            duration=data.get("duration", ""),
+            equipment=data.get("equipment", ""),
+            baggage=data.get("baggage", ""),
+            meal=data.get("meal", ""),
+            nonstop=data.get("nonstop", ""),
+            departure_place=data.get("departure_place", ""),
+            departure_terminal=data.get("departure_terminal", ""),
+            departure_time=data.get("departure_time", ""),
+            arrival_place=data.get("arrival_place", ""),
+            arrival_terminal=data.get("arrival_terminal", ""),
+            arrival_time=data.get("arrival_time", ""),
+            des_time=data.get("des_time", ""),
+            economy_class=data.get("economy_class", ""),
+        )
     def to_dict(self):
         return {
             "des": self.des,
@@ -73,6 +93,21 @@ class Booking:
         self.ticket = ticket
         self.flight1 = flight1
         self.flight2 = flight2
+
+    @staticmethod
+    def from_dict(data):
+        flight1 = Flight.from_dict(data["flight1"]) if data.get("flight1") else None
+        flight2 = Flight.from_dict(data["flight2"]) if data.get("flight2") else None
+        return Booking(
+            booking_ref=data.get("booking_ref"),
+            date_issue=data.get("date_issue"),
+            passenger_name=data.get("passenger_name"),
+            reservation_status=data.get("reservation_status"),
+            ticket=data.get("ticket"),
+            flight1=flight1,
+            flight2=flight2,
+        )
+        
     def to_dict(self):
         return {
             "booking_ref": self.booking_ref,

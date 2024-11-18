@@ -43,7 +43,7 @@ class PDFManager:
         return pdf_filename
 
     @staticmethod
-    def print_pdf(booking, passenger_name, logo_path, selected_fields=None):
+    def print_pdf(booking, passenger_name, logo_path, selected_fields=None, logo_user=None):
 
         PDFManager.update_flight_times(booking)
         pdf_filename = PDFManager.create_pdf_filename(passenger_name, booking)
@@ -52,17 +52,17 @@ class PDFManager:
         logo_base64 = PDFManager.get_image_base64(logo_path)
 
         template_path = os.path.abspath("template_ticket.html")
-        html_content = PDFManager.render_pdf_template(template_path, booking,logo_base64, selected_fields )
+        html_content = PDFManager.render_pdf_template(template_path, booking, logo_base64, selected_fields,logo_user=logo_user )
 
         HTML(string=html_content).write_pdf(pdf_path)
 
         return pdf_path
 
     @staticmethod
-    def render_pdf_template(template_path, booking, logo_base64, selected_fields=None ):
+    def render_pdf_template(template_path, booking, logo_base64, selected_fields=None, logo_user=None ):
         env = Environment(loader=FileSystemLoader(os.path.dirname(template_path)))
         template = env.get_template(os.path.basename(template_path))
-        return template.render(booking=booking, logo_base64= logo_base64, selected_fields=selected_fields)
+        return template.render(booking=booking, logo_base64= logo_base64, selected_fields=selected_fields, logo_user=logo_user)
 
     @staticmethod
     def update_flight_times(booking):
@@ -111,8 +111,8 @@ class PDFManager:
                     correct_format
                 )
     @staticmethod
-    def create_all_pdfs(booking, logo_path, selected_fields=None ):
-
+    def create_all_pdfs(booking, logo_path, selected_fields=None, logo_user=None ):
+        print(logo_user)
         zip_dir = os.path.join(os.path.dirname(__file__), 'zip')        
         zip_filename = os.path.join(zip_dir, "all_tickets.zip")
 
@@ -123,7 +123,7 @@ class PDFManager:
         pdf_files = []
         for passenger in booking.passenger_name:
             passenger_name = passenger
-            pdf_path = PDFManager.print_pdf(booking, passenger_name, logo_path, selected_fields)
+            pdf_path = PDFManager.print_pdf(booking, passenger_name, logo_path, selected_fields, logo_user)
             pdf_files.append(pdf_path)
         with zipfile.ZipFile(zip_filename, "w") as zipf:
             for pdf in pdf_files:

@@ -23,7 +23,7 @@
     <div class="container">
         <div class="left-side">
             <h2>Input Booking Data</h2>
-            <form id="myForm" method="post" action="/parsedata">
+            <form id="myForm" onsubmit="updateBookingData(event)">
                 <textarea name="data" id="bookingData" placeholder="Enter booking data here..."></textarea>
                 <label for="logo_ticket">Logo hãng máy bay</label>
                 <select name="logo_ticket" id="logo_ticket">
@@ -55,16 +55,15 @@
                 </tr>
                 <tr>
                     <td>Booking Reference</td>
-                    <td>{{ booking.booking_ref }}</td>
+                    <td id="booking_ref">{{ booking.booking_ref }}</td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="booking_ref" checked> -->
                     </td>
                 </tr>
                 <tr>
                     <td>Passenger Name</td>
                     <td>
-                        <ul>
+                        <ul id="passenger_name">
                             {% for name in booking.passenger_name %}
                             <li>{{ name }}</li>
                             {% endfor %}
@@ -72,19 +71,18 @@
                     </td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="passenger_name" checked > -->
                     </td>
                 </tr>
                 <tr>
                     <td>Reservation Status</td>
-                    <td>{{ booking.reservation_status }}</td>
+                    <td id="reservation_status">{{ booking.reservation_status }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="reservation_status" checked></td>
                 </tr>
                 <tr>
                     <td>Ticket</td>
                     <td>
-                        <ul>
+                        <ul id="ticket_list">
                             {% for ticket in booking.ticket %}
                             <li>{{ ticket }}</li>
                             {% endfor %}
@@ -92,150 +90,133 @@
                     </td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="ticket_status" checked> -->
                     </td>
                 </tr>
                 <tr>
                     <td>Flight 1</td>
-                    <td>{{ booking.flight1.des }}</td>
-                    <td>{{ booking.flight1.des_time }}</td>
+                    <td id="flight1_des">{{ booking.flight1.des }}</td>
+                    <td id="flight1_des_time">{{ booking.flight1.des_time }}</td>
                     <td><input type="checkbox" class="select-checkbox" value="flight1_des" checked></td>
                 </tr>
                 <tr>
                     <td>Departure</td>
-                    <td>
+                    <td id="flight1_departure_place">
                         {{ booking.flight1.departure_place }}
                         {% if booking.flight1.departure_terminal %}
                         {{ booking.flight1.departure_terminal }}
                         {% endif %}
                     </td>
-                    <td>{{ booking.flight1.departure_time }}</td>
+                    <td id="flight1_departure_time">{{ booking.flight1.departure_time }}</td>
                     <td><input type="checkbox" class="select-checkbox" value="flight1_departure_place" checked></td>
                 </tr>
                 <tr>
                     <td>Arrival</td>
-                    <td>
+                    <td id="flight1_arrival_place">
                         {{ booking.flight1.arrival_place }}
                         {% if booking.flight1.arrival_terminal %}
                         {{ booking.flight1.arrival_terminal }}
                         {% endif %}
                     </td>
-                    <td>{{ booking.flight1.arrival_time }}</td>
+                    <td id="flight1_arrival_time">{{ booking.flight1.arrival_time }}</td>
                     <td><input type="checkbox" class="select-checkbox" value="flight1_arrival_place" checked></td>
                 </tr>
                 <tr>
                     <td>Duration</td>
-                    <td>{{ booking.flight1.duration }}</td>
+                    <td id="flight1_duration">{{ booking.flight1.duration }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight1_duration" checked></td>
                 </tr>
                 <tr>
                     <td>Baggage</td>
-                    <td>{{ booking.flight1.baggage }}</td>
+                    <td id="flight1_baggage">{{ booking.flight1.baggage }}</td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="flight1_baggage" checked> -->
                     </td>
 
                 </tr>
                 <tr>
                     <td>Meal</td>
-                    <td>{{ booking.flight1.meal }}</td>
+                    <td id="flight1_meal">{{ booking.flight1.meal }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight1_meal" checked></td>
 
                 </tr>
                 <tr>
                     <td>Non-stop</td>
-                    <td>{{ booking.flight1.nonstop }}</td>
+                    <td id="flight1_nonstop">{{ booking.flight1.nonstop }}</td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="flight1_nonstop" checked> -->
                     </td>
 
                 </tr>
                 <tr>
                     <td>Equipment</td>
-                    <td>{{ booking.flight1.equipment }}</td>
+                    <td id="flight1_equipment">{{ booking.flight1.equipment }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight1_equipment" checked></td>
 
                 </tr>
-                <!-- <tr>
-                    <td>Economy</td>
-                    <td>{{ booking.flight1.economy_class }}</td>
-                    <td></td>
-                    <td><input type="checkbox" class="select-checkbox" value="flight1_economy_class" checked></td>
-                </tr> -->
                 <tr>
                     <td>Flight 2</td>
-                    <td>{{ booking.flight2.des }}</td>
-                    <td>{{ booking.flight2.des_time }}</td>
+                    <td id="flight2_des">{{ booking.flight2.des }}</td>
+                    <td id="flight2_des_time">{{ booking.flight2.des_time }}</td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_des" checked></td>
 
                 </tr>
                 <tr>
                     <td>Departure</td>
-                    <td>
+                    <td id="flight2_departure_place">
                         {{ booking.flight2.departure_place }}
                         {% if booking.flight2.departure_terminal %}
                         {{ booking.flight2.departure_terminal }}
                         {% endif %}
                     </td>
-                    <td>{{ booking.flight2.departure_time }}</td>
+                    <td id="flight2_departure_time">{{ booking.flight2.departure_time }}</td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_departure_place" checked></td>
                 </tr>
                 <tr>
                     <td>Arrival</td>
-                    <td>
+                    <td id="flight2_arrival_place">
                         {{ booking.flight2.arrival_place }}
                         {% if booking.flight2.arrival_terminal %}
                         {{ booking.flight2.arrival_terminal }}
                         {% endif %}
                     </td>
-                    <td>{{ booking.flight2.arrival_time }}</td>
+                    <td id="flight2_arrival_time">{{ booking.flight2.arrival_time }}</td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_arrival_place" checked></td>
                 </tr>
                 <tr>
                     <td>Duration</td>
-                    <td>{{ booking.flight2.duration }}</td>
+                    <td id="flight2_duration">{{ booking.flight2.duration }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_duration" checked></td>
                 </tr>
                 <tr>
                     <td>Baggage</td>
-                    <td>{{ booking.flight2.baggage }}</td>
+                    <td id="flight2_baggage">{{ booking.flight2.baggage }}</td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="flight2_baggage" checked> -->
                     </td>
                 </tr>
                 <tr>
                     <td>Meal</td>
-                    <td>{{ booking.flight2.meal }}</td>
+                    <td id="flight2_meal">{{ booking.flight2.meal }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_meal" checked></td>
                 </tr>
                 <tr>
                     <td>Non-stop</td>
-                    <td>{{ booking.flight2.nonstop }}</td>
+                    <td id="flight2_nonstop">{{ booking.flight2.nonstop }}</td>
                     <td></td>
                     <td>
-                        <!-- <input type="checkbox" class="select-checkbox" value="flight2_nonstop" checked> -->
                     </td>
                 </tr>
                 <tr>
                     <td>Equipment</td>
-                    <td>{{ booking.flight2.equipment }}</td>
+                    <td id="flight2_equipment">{{ booking.flight2.equipment }}</td>
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_equipment" checked></td>
                 </tr>
-                <!-- <tr>
-                    <td>Economy</td>
-                    <td>{{ booking.flight2.economy_class }}</td>
-                    <td></td>
-                    <td><input type="checkbox" class="select-checkbox" value="flight2_economy_class" checked></td>
-                </tr> -->
             </table>
             {% else %}
             <p>No booking data parsed yet.</p>
@@ -243,33 +224,105 @@
             {% if missing_info %}
             <span class="missing-info" style="margin-left: 10px; color: red;">{{ missing_info }}</span>
             {% endif %}
-            <!-- <button class="print-btn" id="printButton">Print Ticket</button> -->
             <div style="display: flex; align-items: center;">
                 <button class="print-btn" id="downloadAllButton">Download Ticket All</button>
             </div>
         </div>
 
     </div>
-    <div id="ticket-details">
-        {% if booking %}
-        {% for name in booking.passenger_name %}
-        <div class="ticket-container" id="airlineTicket">
+    <div id="ticket-details"></div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        async function updateBookingData(event) {
+            event.preventDefault();
+
+            const formData = new FormData(document.getElementById('myForm'));
+
+            const response = await fetch('/parsedata', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data.logo_path);
+                updateBookingTable(data.booking);
+                updateFlightDetails(data.booking, data.logo_path, data.logo_user);
+            } else {
+                alert('Error fetching data');
+            }
+        }
+        async function updateBookingTable(booking) {
+            document.getElementById('booking_ref').textContent = booking.booking_ref;
+
+            const passengerNameList = document.getElementById('passenger_name');
+            passengerNameList.innerHTML = '';
+            booking.passenger_name.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                passengerNameList.appendChild(li);
+            });
+
+            const ticketList = document.getElementById('ticket_list');
+            ticketList.innerHTML = '';
+            booking.ticket.forEach(ticket => {
+                const li = document.createElement('li');
+                li.textContent = ticket;
+                ticketList.appendChild(li);
+            });
+            document.getElementById('flight1_des').textContent = booking.flight1.des;
+            document.getElementById('flight1_des_time').textContent = booking.flight1.des_time;
+            document.getElementById('flight1_departure_time').textContent = booking.flight1.departure_time;
+            document.getElementById('flight1_departure_place').textContent = booking.flight1.departure_place;
+            document.getElementById('flight1_arrival_time').textContent = booking.flight1.arrival_time;
+            document.getElementById('flight1_arrival_place').textContent = booking.flight1.arrival_place;
+            document.getElementById('flight1_duration').textContent = booking.flight1.duration;
+            document.getElementById('flight1_baggage').textContent = booking.flight1.baggage;
+            document.getElementById('flight1_meal').textContent = booking.flight1.meal;
+            document.getElementById('flight1_nonstop').textContent = booking.flight1.nonstop;
+            document.getElementById('flight1_equipment').textContent = booking.flight1.equipment;
+            document.getElementById('flight2_des').textContent = booking.flight2.des;
+            document.getElementById('flight2_des_time').textContent = booking.flight2.des_time;
+            document.getElementById('flight2_departure_time').textContent = booking.flight2.departure_time;
+            document.getElementById('flight2_departure_place').textContent = booking.flight2.departure_place;
+            document.getElementById('flight2_arrival_place').textContent = booking.flight2.arrival_place;
+            document.getElementById('flight2_arrival_time').textContent = booking.flight2.arrival_time;
+            document.getElementById('flight2_duration').textContent = booking.flight2.duration;
+            document.getElementById('flight2_baggage').textContent = booking.flight2.baggage;
+            document.getElementById('flight2_meal').textContent = booking.flight2.meal;
+            document.getElementById('flight2_nonstop').textContent = booking.flight2.nonstop;
+            document.getElementById('flight2_equipment').textContent = booking.flight2.equipment;
+            document.getElementById('reservation_status').textContent = booking.reservation_status;
+        }
+        async function updateFlightDetails(booking, logo_path, logo_user) {
+            const ticketDetails = document.getElementById('ticket-details');
+            ticketDetails.innerHTML = '';
+            booking.passenger_name.forEach(name => {
+                const ticketContainer = document.createElement('div');
+                ticketContainer.classList.add('ticket-container');
+                const userLogoHtml = logo_user && logo_user !== 'none' ? `<img src="/static/uploads/${logo_user}" alt="User Logo">` : '';
+                ticketContainer.innerHTML = `
+                        <div class="ticket-container" id="airlineTicket">
             <div class="ticket-header">
-                <img src="{{ url_for('static', filename=logo_path) }}" alt="Vietnam Airlines">
-                <button id="downloadButton" class="download-btn" onclick="downloadPDF('{{ name }}')">Download
-                    PDF</button>
+                <div class="logo-container">
+                    <img src="/static/uploads/${logo_path}" alt="Vietnam Airlines">
+                    ${userLogoHtml}
+                </div>
+                <button id="downloadButton" class="download-btn" onclick="downloadPDF('${name}')">Download
+                    PDF</button>                
             </div>
             <h2>Travel Itinerary</h2>
             <div class="passenger-info">
-                <h3><strong>{{ name }}</strong></h3>
+                <h3><strong>${name}</strong></h3>
                 <div class="booking-info">
                     <table style="border-collapse: collapse; width: 100%;border: 0; margin-top: 0;">
                         <tr>
                             <td style="border: 0; text-align: left; font-size: 10px; width: 50%;">
-                                Booking reference: <strong>{{ booking.booking_ref }}</strong>
+                                Booking reference: <strong>${booking.booking_ref}</strong>
                             </td>
                             <td style="border: 0;  text-align: left; font-size: 10px;">
-                                Date of Issue: {{ booking.date_issue }}
+                                Date of Issue: ${booking.date_issue}
                             </td>
                         </tr>
                         <tr>
@@ -287,22 +340,22 @@
                 <h3 class="flight-details-header">Flight Details</h3>
                 <table class="flight-table" style="table-layout: auto; width: 100%;">
                     <tr>
-                        <th style="width: 5%; white-space: nowrap;"><strong>{{ booking.flight1.des.split('-')[0]
-                                }}</strong></th>
+                        <th style="width: 5%; white-space: nowrap;"><strong>${booking.flight1.des.split('-')[0]}
+                            </strong></th>
                         <th class="operated-by" colspan="2">Operated by Vietnam Airlines</th>
-                        <th style="width: 10%;">{{ booking.flight1.equipment }}</th>
+                        <th style="width: 10%;">${booking.flight1.equipment}</th>
                         <th colspan="2"></th>
 
-                        <th colspan="2">{{ booking.flight1.economy_class }}</th>
+                        <th colspan="2">${booking.flight1.economy_class}</th>
                     </tr>
                     <tr>
                         <td></td>
                         <td style="width: 5%;">From</td>
-                        <td style="width: 25%;">{{ booking.flight1.departure_place }}</td>
-                        <td>{{ booking.flight1.departure_terminal }}</td>
+                        <td style="width: 25%;">${booking.flight1.departure_place}</td>
+                        <td>${booking.flight1.departure_terminal}</td>
                         <td style="width: 3%; text-align: right;">Depart</td>
                         <td style="width: 15%; text-align: left;">
-                            <!-- {{ booking.flight1.departure_time }} -->
+                            ${formatFlightTime(booking.flight1.departure_time, new Date(booking.date_issue).getFullYear())}
                         </td>
                         <td>Status</td>
                         <td>Confirmed</td>
@@ -310,11 +363,12 @@
                     <tr>
                         <td></td>
                         <td>To</td>
-                        <td>{{ booking.flight1.arrival_place }}</td>
+                        <td>${booking.flight1.arrival_place}</td>
                         <td></td>
                         <td style="width: 3%; text-align: right;">Arrive</td>
                         <td style="width: 15%; text-align: left;">
-                            <!-- {{ booking.flight1.arrival_time }} -->
+                            ${formatFlightTime(booking.flight1.arrival_time, new Date(booking.date_issue).getFullYear())}
+                        </td>
                         </td>
                         <td>Stopover</td>
                         <td>0</td>
@@ -322,7 +376,7 @@
                     <tr>
                         <td></td>
                         <td>Flight Meal</td>
-                        <td>{{ booking.flight1.meal }}</td>
+                        <td>${booking.flight1.meal}</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -330,24 +384,24 @@
                         <td></td>
 
                     </tr>
-                    {% if booking.flight2 and booking.flight2.des != '' %}
+                    ${booking.flight2 && booking.flight2.des !== '' ? `
                     <tr>
-                        <th style="width: 5%; white-space: nowrap;"><strong>{{ booking.flight2.des.split('-')[0]
-                                }}</strong></th>
+                        <th style="width: 5%; white-space: nowrap;"><strong>${booking.flight2.des.split('-')[0]
+                        }</strong></th>
                         <th class="operated-by" colspan="2">Operated by Vietnam Airlines</th>
-                        <th style="width: 10%;">{{ booking.flight2.equipment }}</th>
+                        <th style="width: 10%;">${booking.flight2.equipment}</th>
                         <th colspan="2"></th>
-
-                        <th colspan="2">{{ booking.flight2.economy_class }}</th>
+                            ${formatFlightTime(booking.flight2.departure_time, new Date(booking.date_issue).getFullYear())}
+                        <th colspan="2">${booking.flight2.economy_class}</th>
                     </tr>
                     <tr>
                         <td></td>
                         <td style="width: 5%;">From</td>
-                        <td style="width: 25%;">{{ booking.flight2.departure_place }}</td>
-                        <td>{{ booking.flight2.departure_terminal }}</td>
+                        <td style="width: 25%;">${booking.flight2.departure_place}</td>
+                        <td>${booking.flight2.departure_terminal}</td>
                         <td style="width: 3%; text-align: right;">Depart</td>
                         <td style="width: 15%; text-align: left;">
-                            <!-- {{ booking.flight2.departure_time }} -->
+                            ${formatFlightTime(booking.flight2.arrival_time, new Date(booking.date_issue).getFullYear())}
                         </td>
                         <td>Status</td>
                         <td>Confirmed</td>
@@ -355,11 +409,10 @@
                     <tr>
                         <td></td>
                         <td>To</td>
-                        <td>{{ booking.flight2.arrival_place }}</td>
+                        <td>${booking.flight2.arrival_place}</td>
                         <td></td>
                         <td style="width: 3%; text-align: right;">Arrive</td>
                         <td style="width: 15%; text-align: left;">
-                            <!-- {{ booking.flight2.arrival_time }} -->
                         </td>
                         <td>Stopover</td>
                         <td>0</td>
@@ -367,88 +420,32 @@
                     <tr>
                         <td></td>
                         <td>Flight Meal</td>
-                        <td>{{ booking.flight2.meal }}</td>
+                        <td>${booking.flight2.meal}</td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
                     </tr>
-                    {% endif %}
+                    ` : ''}
                 </table>
             </div>
+        </div>`;
 
-        </div>
-        {% endfor %}
-        {% endif %}
-    </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+                ticketDetails.appendChild(ticketContainer);
+            });
+        }
+        function formatFlightTime(flightTime, year) {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const dateTime = new Date(flightTime);
+            const dayName = days[dateTime.getDay()];
+            const day = dateTime.getDate();
+            const month = months[dateTime.getMonth()];
+            const time = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    <script>
-        document.getElementById('myForm').addEventListener('submit', function (event) {
-            const formData = new FormData(this);
-            fetch('/parsedata', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => {
-                    console.log('Dữ liệu đã được gửi');
-                })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                });
-        });
-        var date_issue = "{{ booking.date_issue }}";
-        var flight1_departure_time = "{{ booking.flight1.departure_time }}";
-        var flight2_departure_time = "{{ booking.flight2.departure_time }}";
-        var flight1_arrival_time = "{{ booking.flight1.arrival_time }}";
-        var flight2_arrival_time = "{{ booking.flight2.arrival_time }}";
-
-        document.addEventListener("DOMContentLoaded", function () {
-            function formatFlightTime(flightTime, year) {
-                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-
-                const dateTime = new Date(flightTime);
-                const dayName = days[dateTime.getDay()];
-                const day = dateTime.getDate();
-                const month = months[dateTime.getMonth()];
-                const time = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                return `${dayName}, ${day} ${month} ${year}, ${time}`;
-            }
-
-            function updateFlightDetails() {
-                const bookingDate = new Date(date_issue);
-                const year = bookingDate.getFullYear();
-
-                const flightTable = document.querySelector(".flight-details .flight-table");
-                const flight1DepartureCell = flightTable.querySelector("tr:nth-child(2) td:nth-child(6)");
-                if (flight1DepartureCell) {
-                    flight1DepartureCell.textContent = formatFlightTime(flight1_departure_time, year);
-                }
-
-                const flight1ArrivalCell = flightTable.querySelector("tr:nth-child(3) td:nth-child(6)");
-                if (flight1ArrivalCell) {
-                    flight1ArrivalCell.textContent = formatFlightTime(flight1_arrival_time, year);
-                }
-
-                {% if booking.flight2 and booking.flight2.des != '' %}
-                const flight2DepartureCell = flightTable.querySelector("tr:nth-child(6) td:nth-child(6)");
-                if (flight2DepartureCell) {
-                    flight2DepartureCell.textContent = formatFlightTime(flight2_departure_time, year);
-                }
-
-                const flight2ArrivalCell = flightTable.querySelector("tr:nth-child(7) td:nth-child(6)");
-                if (flight2ArrivalCell) {
-                    flight2ArrivalCell.textContent = formatFlightTime(flight2_arrival_time, year);
-                }
-                {% endif %}
-            }
-
-            updateFlightDetails();
-        });
+            return `${dayName}, ${day} ${month} ${year}, ${time}`;
+        }
     </script>
 
 </body>

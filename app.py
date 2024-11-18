@@ -36,20 +36,25 @@ import zipfile
 import tempfile
 from flask import after_this_request
 from collections import defaultdict
+import base64
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 db_path = "dblfihgt.db"
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.abspath(db_path)}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static\\uploads')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db.init_app(app)
 
-global_booking = None
+# global_booking = None
 logo_path = "vietnam-airline-logo.png"
 
 user_requests = defaultdict(int) 
 MAX_REQUESTS_PER_DAY = 5 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 if not os.path.exists(db_path):
     print("Database not found. Creating new database.")
@@ -83,7 +88,7 @@ def parse_data():
             return redirect(url_for("login_page"))
         user_requests[ip_address] += 1
     if request.method == "POST":
-        global global_booking, logo_path
+        global logo_path
         try:
             logo= request.form.get("logo_ticket")
             print(logo)
@@ -94,16 +99,18 @@ def parse_data():
             elif logo == "bamboo":
                 logo_path = "bamboo-logo.png"
 
-            image = request.files.get('image')
+            image = request.files.get("image")
             if image:
-                if allowed_file(image.filename):  
-                    image_filename = f'static/UploadImage/{image.filename}'
-                    image.save(image_filename)
-                    session['uploaded_image'] = image_filename
+                if allowed_file(image.filename):
+                    filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{image.filename}"
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    image.save(filepath)
+                    session['uploaded_image_path'] = filepath
+                    print("Session data on download_pdf:", session['uploaded_image_path'])
                 else:
                     return jsonify({"error": "Ảnh tải lên không hợp lệ, chỉ chấp nhận các định dạng như .jpg, .png, .jpeg"}), 400
             else:
-                session['uploaded_image'] = None 
+                session['uploaded_image_path'] = None
 
 
             form_data = request.form.get("data", "").replace("\r\n", "\n")
@@ -208,9 +215,12 @@ def parse_data():
                     flight2,
                 )
                 session['booking'] = global_booking.to_dict()
-                return render_template(
-                    "parse_data.html", booking=global_booking, missing_info=missing_info, logo_path = logo_path
-                )
+                return jsonify({
+                    "booking": global_booking.to_dict(),
+                    "missing_info": missing_info,
+                    "logo_path": logo_path,
+                    "logo_user": filename
+                }), 200
 
             return jsonify({"error": "Không có dữ liệu chuyến bay"}), 400
 
@@ -220,11 +230,14 @@ def parse_data():
 
 @app.route("/download_pdf", methods=["POST"])
 def download_pdf():
-    global global_booking, logo_path
+    global logo_path
+
+    booking_data = session.get('booking')
     data = request.get_json()
     passenger_name = data.get("passenger_name")
     selected_fields = data.get("selected_fields", [])
 
+    global_booking = Booking.from_dict(booking_data)
     print("Selected fields:", selected_fields)
 
     if not passenger_name:
@@ -244,8 +257,16 @@ def download_pdf():
         flight1=global_booking.flight1,
         flight2=global_booking.flight2,
     )
+    print("Session data on download_pdf:", session)
+    logo_user_path = session.get('uploaded_image_path')
+    print("Logo user path:",logo_user_path)
+    logo_user_base64 = None
 
-    pdf_path = PDFManager.print_pdf(filtered_booking, passenger_name, logo_path, selected_fields)
+    if logo_user_path and os.path.exists(logo_user_path):
+        with open(logo_user_path, "rb") as logo_file:
+            logo_user_base64 = base64.b64encode(logo_file.read()).decode('utf-8')
+    # print(logo_user_base64)
+    pdf_path = PDFManager.print_pdf(filtered_booking, passenger_name, logo_path, selected_fields, logo_user_base64)
     with open(pdf_path, "rb") as f:
         pdf_data = f.read()
     response = Response(pdf_data, mimetype="application/pdf")
@@ -262,12 +283,13 @@ def download_pdf():
     return response
 @app.route("/download_all_pdf", methods=["POST"])
 def download_all_pdf():
-    global global_booking, logo_path
+    global logo_path
+    booking_data = session.get('booking')
+    global_booking = Booking.from_dict(booking_data)
     data = request.get_json()
     selected_fields = data.get("selected_fields", [])
-
-    print(global_booking.passenger_name)
-    zip_path = PDFManager.create_all_pdfs(global_booking, logo_path, selected_fields)
+    logo_user = session.get('uploaded_image_base64')
+    zip_path = PDFManager.create_all_pdfs(global_booking, logo_path, selected_fields, logo_user)
     print(zip_path)
 
     return send_file(
@@ -285,8 +307,6 @@ def home():
 @app.route("/login_page")
 def login_page():
     return render_template("login.html")
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -299,6 +319,7 @@ def login():
         if user:
             session["user_id"] = user.id
             session["usertype"] = user.usertype
+            session.permanent = True
             if user.usertype == "guest":
                 session.permanent = True 
                 app.permanent_session_lifetime = timedelta(hours=1) 
@@ -312,92 +333,6 @@ def login():
         else:
             return "Notok", 400
     return render_template("login.html")
-@app.route("/overview", methods=["GET"])
-def admin_overview():
-    if "user_id" in session and session["usertype"] == "admin":
-        user = Register.query.filter_by(id=session["user_id"]).first()
-        if user:
-            return render_template("admin/overview.html", user_name=user.user)
-        else:
-            return "Không tìm thấy thông tin người dùng"
-    else:
-        return redirect(url_for("login"))
-
-@app.route("/guest", methods=["GET"])
-def staff_timekeeping():
-    if "user_id" in session and session["usertype"] in [
-        "nhanvienkho",
-        "nhanvienbanhang",
-        "thuquy",
-    ]:
-        user = Register.query.filter_by(id=session["user_id"]).first()
-        if user:
-            staff = Staff.query.filter_by(phone=user.phone).first()
-            if staff:
-                return render_template(
-                    "staff_timekeeping.html",
-                    user_id=staff.id_staff,
-                    user_name=user.user,
-                    user_type=user.usertype,
-                )
-            else:
-                return "Không tìm thấy thông tin nhân viên"
-        else:
-            return "Không tìm thấy thông tin người dùng"
-    else:
-        return redirect(url_for("login"))
-@app.route("/staff", methods=["GET"])
-def amdin_staff():
-    if "user_id" in session and session["usertype"] == "admin":
-        user = Register.query.filter_by(id=session["user_id"]).first()
-        if user:
-            return render_template("admin/staff.html", user_name=user.user)
-        else:
-            return "Không tìm thấy thông tin người dùng"
-    else:
-        return redirect(url_for("login"))
-
-@app.route("/add_staff", methods=["POST"])
-def add_user():
-    if request.method == "POST":
-        data = request.form.to_dict()
-        print(data)
-        try:
-            new_user = Register(
-                user=data.get("name_staff"),
-                email=data.get("staff_email"),
-                password=md5_hash(data.get("staff_password")),
-                usertype=data.get("type_staff"),
-                secret_question=data.get("secret_question"),
-                phone=data.get("phone"),
-            )
-            new_user.add_register()
-
-            return jsonify({"success": True, "message": "Staff added successfully"}), 200
-        except Exception as e:
-            print("Exception occurred:", str(e))
-            db.session.rollback()
-            return jsonify({"success": False, "message": str(e)}), 500
-@app.route("/list_staff", methods=["GET"])
-def list_staff():
-    try:
-        staff_list = Register.get_all_registers()
-        staff_data = [
-            {
-                "id": staff.id,
-                "user": staff.user,
-                "email": staff.email,
-                "password": staff.password,
-                "phone": staff.phone,
-                "usertype": staff.usertype,
-                "secret_question": staff.secret_question
-            } for staff in staff_list
-        ]
-
-        return jsonify(staff_data), 200
-    except Exception as e:
-        print("Exception occurred:", str(e))
-        return jsonify({"message": str(e)}), 500
 @app.route("/account", methods=["GET"])
 def admin_account():
     if "user_id" in session and session["usertype"] in ["admin", "guest"]:
