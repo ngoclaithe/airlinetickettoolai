@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý tài khoản</title>
+    <title>Thông tin tài khoản</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../static/css/account.css">
     <link rel="stylesheet" href="../../static/css/base.css">
@@ -63,41 +63,61 @@
             font-weight: bold;
             margin-top: 10px;
         }
+
+        .home-icon {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 40px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 50%;
+            padding: 10px;
+            transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .home-icon:hover {
+            color: #fff;
+            background-color: #0056b3;
+            transform: scale(1.2);
+        }
     </style>
 </head>
 
 <body>
 
-    {% include 'navbar.html' %}
-        <div class="user-info">
-            <h1>Thông tin tài khoản</h1>
-            <label for="username">Tên người dùng:</label>
-            <p id="username" style="font-weight: bold; font-size: 18px; color: #333;">{{ user_name }}</p>
-            <label for="usertype">Loại tài khoản:</label>
-            <p id="usertype" style="font-weight: bold; font-size: 18px; color: #333;">{{ user_type }}</p>
-            <label for="email">Email:</label>
-            <p id="email" style="font-size: 16px; color: #333;">{{ email }}</p>
-            <form id="change-password-form">
-                <label for="old_password" style="font-size: 18px; color: #333;">Mật khẩu cũ:</label>
-                <input type="password" id="old_password" name="old_password" required><br>
-                <label for="new_password" style="font-size: 18px; color: #333;">Mật khẩu mới:</label>
-                <input type="password" id="new_password" name="new_password" required><br>
-                <button type="submit">Thay đổi mật khẩu</button>
-                <p class="success-message">{{ password_message }}</p>
-            </form>
-            <form id="logout-form" method="get" action="/logout">
-                <button type="submit" class="logout-button">Đăng xuất</button>
-            </form>
-            <!-- </div> -->
-        </div>
-        <!-- </div> -->
-    <!-- </div> -->
+    <i class="fas fa-home home-icon" id="home-icon"></i>
+    <div class="user-info">
+        <h1>Thông tin tài khoản</h1>
+        <label for="username">Tên người dùng:</label>
+        <p id="username" style="font-weight: bold; font-size: 18px; color: #333;">{{ user_name }}</p>
+        <label for="usertype">Loại tài khoản:</label>
+        <p id="usertype" style="font-weight: bold; font-size: 18px; color: #333;">{{ user_type }}</p>
+        <label for="email">Email:</label>
+        <p id="email" style="font-size: 16px; color: #333;">{{ email }}</p>
+        <form id="change-password-form">
+            <label for="old_password" style="font-size: 18px; color: #333;">Mật khẩu cũ:</label>
+            <input type="password" id="old_password" name="old_password" required><br>
+            <label for="new_password" style="font-size: 18px; color: #333;">Mật khẩu mới:</label>
+            <input type="password" id="new_password" name="new_password" required><br>
+            <button type="submit">Thay đổi mật khẩu</button>
+            <p class="success-message">{{ password_message }}</p>
+        </form>
+        <form id="logout-form" method="get" action="/logout">
+            <button type="submit" class="logout-button">Đăng xuất</button>
+        </form>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.fonts.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
+        document.getElementById('home-icon').addEventListener('click', function () {
+            window.location.href = '/parse';
+        });
         var userType = "{{user_type}}";
         console.log(userType);
         const notification2 = document.getElementById('notification-icon');
@@ -203,7 +223,7 @@
 
         handleSidebar();
 
-        
+
     </script>
 </body>
 
