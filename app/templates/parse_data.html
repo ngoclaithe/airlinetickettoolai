@@ -251,7 +251,13 @@
                 updateBookingTable(data.booking);
                 updateFlightDetails(data.booking, data.logo_path, data.logo_user);
             } else {
-                alert('Error fetching data');
+                const errorData = await response.json();
+                if (errorData.error && errorData.redirect) {
+                    console.log("Gia tri của chuyển hướng",errorData.redirect);
+                    window.location.href = errorData.redirect; 
+                } else {
+                    alert('Error fetching data');
+                }
             }
         }
         async function updateBookingTable(booking) {

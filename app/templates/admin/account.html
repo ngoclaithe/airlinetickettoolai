@@ -14,7 +14,6 @@
         .user-info {
             margin-top: 180px;
             margin-left: 40%;
-            /* margin: 0 auto; */
             max-width: 400px;
             padding: 20px;
             background-color: #fff;
@@ -70,13 +69,6 @@
 <body>
 
     {% include 'navbar.html' %}
-    <div class="sidebar" id="sidebar">
-        <a href="/parsepage"><i class="fas fa-tachometer-alt"></i> Tách data</a>
-        <a href="/staff"><i class="fas fa-users"></i> Nhân viên</a>
-    </div>
-    <!-- <div class="content" id="content"> -->
-        <!-- <div class="card-container"> -->
-        <!-- <div class="main-content"> -->
         <div class="user-info">
             <h1>Thông tin tài khoản</h1>
             <label for="username">Tên người dùng:</label>
@@ -146,12 +138,10 @@
             })
                 .then(response => {
                     if (response.status === 200) {
-                        // alert("Đã thay đổi mật khẩu thành công");
                         sessionStorage.setItem('toastr_success', 'Đã thay đổi mật khẩu thành công!');
                         sessionStorage.setItem('toastr_title', 'Thành công');
                         location.reload();
                     } else {
-                        // alert("Thay đổi mật khẩu không thành công");
                         sessionStorage.setItem('toastr_error', 'Thay đổi mật khẩu không thành công!');
                         sessionStorage.setItem('toastr_title', 'Thất bại');
                     }

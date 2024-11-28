@@ -7,7 +7,9 @@ bp = Blueprint('auth', __name__)
 @bp.route("/login_page")
 def login_page():
     return render_template("login.html")
-
+@bp.route("//info_account", methods=["GET"])
+def info_account():
+    return render_template("admin/account.html")
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":

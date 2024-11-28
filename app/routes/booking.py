@@ -12,10 +12,15 @@ from ..helpers.parse_data_helpers import (
     abbreviate_airport_name,
     md5_hash,
 )
-from datetime import timedelta
+from datetime import timedelta, datetime
 import re
 from ..helpers.pdf_manager import PDFManager
 import os
+from collections import defaultdict
+
+
+user_requests = defaultdict(int) 
+MAX_REQUESTS_PER_DAY = 5 
 
 bp = Blueprint('booking', __name__)
 
@@ -38,7 +43,10 @@ def parse_data():
     if not is_logged_in:
         today = datetime.now().date()
         if user_requests[ip_address] >= MAX_REQUESTS_PER_DAY:
-            return redirect(url_for("login_page"))
+            return jsonify({
+                "error": "Vượt quá số lượng request cho phép",
+                "redirect": url_for("auth_blueprint.login_page")
+            }), 429
         user_requests[ip_address] += 1
     if request.method == "POST":
         global logo_path

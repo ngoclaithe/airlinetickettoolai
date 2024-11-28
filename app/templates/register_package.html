@@ -14,6 +14,70 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            gap: 20px;
+        }
+
+        .card {
+            width: 300px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border-radius: 10px;
+            box-shadow: 6px 6px 12px #d9d9d9, -6px -6px 12px #ffffff;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 12px 12px 24px #d1d1d1, -12px -12px 24px #ffffff;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .price {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+    </style>
 </head>
 
 <body>
@@ -22,25 +86,15 @@
     {% include 'sidebar.html' %}
     {% endif %}
     <div class="container">
-        <div class="left-side">
-            <h2>Đăng ký gói 1</h2>
-            <form id="myFormNumber" onsubmit="updateNumberToTextData(event)">
-                <label for="numberVAT">Số tiền</label>
-                <label for="numberVAT">Số tiền</label>
-                <label for="numberVAT">Số tiền</label>
-                <label for="numberVAT">Số tiền</label>
-                <input type="submit" value="Đăng ký">
-            </form>
+        <div class="card">
+            <h2>Đăng ký gói tuần</h2>
+            <div class="price">50,000 <span style="font-size: 0.8rem;">/ tuần</span></div>
+            <button class="btn">Đăng ký</button>
         </div>
-        <div class="right-side">
-            <h2>Đăng ký gói 2</h2>
-            <form id="myFormVAT" onsubmit="updateVATData(event)">
-                <label for="numberVAT">Số tiền</label>
-                <label for="numberVAT">Số tiền</label>
-                <label for="numberVAT">Số tiền</label>
-                <label for="numberVAT">Số tiền</label>
-                <input type="submit" value="Đăng ký">
-            </form>
+        <div class="card">
+            <h2>Đăng ký gói tháng</h2>
+            <div class="price">150,000 <span style="font-size: 0.8rem;">/ tháng</span></div>
+            <button class="btn">Đăng ký</button>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -50,61 +104,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         const user_id = "{{user_id}}";
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": true,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-        async function updateNumberToTextData(event) {
-            event.preventDefault();
-
-            const formData = new FormData(document.getElementById('myFormNumber'));
-
-            const response = await fetch('/numbertotext', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById('resultnumberToTextData').innerText = data.result + ' đồng';
-                console.log(data);
-            } else {
-                const errorData = await response.json();
-                toastr.error(errorData.error || 'Có lỗi xảy ra', 'Lỗi');
-            }
-        }
-
-        async function updateVATData(event) {
-            event.preventDefault();
-
-            const formData = new FormData(document.getElementById('myFormVAT'));
-
-            const response = await fetch('/cacul_VAT', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById('resultVATData').innerText = data.result;
-                console.log(data);
-            } else {
-                const errorData = await response.json();
-                toastr.error(errorData.error || 'Có lỗi xảy ra', 'Lỗi');
-            }
-        }
     </script>
 
 </body>
