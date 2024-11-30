@@ -95,3 +95,18 @@ input[type="submit"] {
 .logo-container img {
     width: 200px;
 }
+.upload-logo {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 8px; 
+}
+
+.upload-logo .form-label {
+    font-weight: bold; 
+    margin-bottom: 0; 
+}
+
+.upload-logo .btn {
+    align-self: flex-start; 
+}

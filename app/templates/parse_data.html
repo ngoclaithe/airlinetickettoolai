@@ -22,22 +22,32 @@
     <div class="container">
         <div class="left-side">
             <h2>Input Booking Data</h2>
-            <form id="myForm" onsubmit="updateBookingData(event)">
-                <textarea name="data" id="bookingData" placeholder="Enter booking data here..."></textarea>
-                <label for="logo_ticket">Logo hãng máy bay</label>
-                <select name="logo_ticket" id="logo_ticket">
-                    <option value="vna" selected>VietNam Airlines</option>
-                    <option value="bamboo">Bamboo Airway</option>
-                    <option value="vietjet">Vietjet</option>
-                </select>
-                <label for="imageUpload">Upload logo</label>
-                <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none;">
-                <button type="button" onclick="document.getElementById('imageUpload').click();">Chọn ảnh</button>
-
+            <form id="myForm" onsubmit="updateBookingData(event)"  class="mb-4">
+                <div class="mb-3">
+                    <textarea name="data" id="bookingData" placeholder="Enter booking data here..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="logo_ticket">Logo hãng máy bay</label>
+                    <select name="logo_ticket" id="logo_ticket">
+                        <option value="vna" selected>VietNam Airlines</option>
+                        <option value="bamboo">Bamboo Airway</option>
+                        <option value="vietjet">Vietjet</option>
+                    </select>
+                </div>
                 <input type="submit" value="Parse Data">
-
             </form>
-
+            {% if user_id %}
+            <div class="upload-logo mt-4">
+                <label for="imageUpload" class="form-label">Upload logo Bên Phải</label>
+                <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none;">
+                <button 
+                    type="button" 
+                    class="btn btn-secondary" 
+                    onclick="document.getElementById('imageUpload').click();">
+                    Chọn ảnh
+                </button>
+            </div>            
+            {% endif %}            
             {% if error %}
             <p class="error">{{ error }}</p>
             {% endif %}
@@ -155,6 +165,15 @@
                     <td><input type="checkbox" class="select-checkbox" value="flight1_equipment" checked></td>
 
                 </tr>
+                {% if user_id %} 
+                <tr>
+                    <td>Economy</td>
+                    <td id="flight1_economy_class">{{ booking.flight1.economy_class }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight1_economy_class" checked></td>
+
+                </tr>
+                {% endif %}
                 <tr>
                     <td>Flight 2</td>
                     <td id="flight2_des">{{ booking.flight2.des }}</td>
@@ -216,6 +235,14 @@
                     <td></td>
                     <td><input type="checkbox" class="select-checkbox" value="flight2_equipment" checked></td>
                 </tr>
+                {% if user_id %} 
+                <tr>
+                    <td>Economy</td>
+                    <td id="flight2_economy_class">{{ booking.flight2.economy_class }}</td>
+                    <td></td>
+                    <td><input type="checkbox" class="select-checkbox" value="flight2_economy_class" checked></td>
+                </tr>
+                {% endif %}
             </table>
             {% else %}
             <p>No booking data parsed yet.</p>
@@ -223,9 +250,11 @@
             {% if missing_info %}
             <span class="missing-info" style="margin-left: 10px; color: red;">{{ missing_info }}</span>
             {% endif %}
+            {% if user_id %}
             <div style="display: flex; align-items: center;">
                 <button class="print-btn" id="downloadAllButton">Download Ticket All</button>
             </div>
+            {% endif %}
         </div>
 
     </div>
@@ -233,8 +262,9 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         const user_id = "{{ user_id }}";
+        console.log(user_id);
         const loginUrl = "{{ url_for('auth_blueprint.login') }}";
-        console.log(loginUrl);
+
         async function updateBookingData(event) {
             event.preventDefault();
 
@@ -289,6 +319,7 @@
             document.getElementById('flight1_meal').textContent = booking.flight1.meal;
             document.getElementById('flight1_nonstop').textContent = booking.flight1.nonstop;
             document.getElementById('flight1_equipment').textContent = booking.flight1.equipment;
+            document.getElementById('flight1_economy_class').textContent = booking.flight1.economy_class;
             document.getElementById('flight2_des').textContent = booking.flight2.des;
             document.getElementById('flight2_des_time').textContent = booking.flight2.des_time;
             document.getElementById('flight2_departure_time').textContent = booking.flight2.departure_time;
@@ -300,6 +331,7 @@
             document.getElementById('flight2_meal').textContent = booking.flight2.meal;
             document.getElementById('flight2_nonstop').textContent = booking.flight2.nonstop;
             document.getElementById('flight2_equipment').textContent = booking.flight2.equipment;
+            document.getElementById('flight2_economy_class').textContent = booking.flight2.economy_class;
             document.getElementById('reservation_status').textContent = booking.reservation_status;
         }
         async function updateFlightDetails(booking, logo_path, logo_user) {
@@ -455,6 +487,7 @@
         }
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='script/menu.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/upload_image.js') }}"></script>
 </body>
 
 </html>

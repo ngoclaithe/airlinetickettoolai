@@ -12,13 +12,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <style>
         .user-info {
-            margin-top: 180px;
-            margin-left: 40%;
-            max-width: 400px;
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
             padding: 20px;
             background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .user-info form {
@@ -27,12 +27,13 @@
 
         input[type="password"],
         input[type="text"] {
-            width: calc(100% - 60px);
+            width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
             font-size: 16px;
+            box-sizing: border-box;
         }
 
         button[type="submit"] {
@@ -44,12 +45,25 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            width: 200px;
-            margin-left: 60px;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+            display: block;
         }
 
         button[type="submit"]:hover {
             background-color: #0056b3;
+        }
+
+        @media screen and (max-width: 480px) {
+            .user-info {
+                width: 95%;
+                padding: 15px;
+            }
+
+            button[type="submit"] {
+                max-width: 100%;
+            }
         }
 
         .logout-container {

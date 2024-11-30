@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, Response, send_file
 from ..models.flight import Flight
 from ..models.booking import Booking
 from ..models.register import Register
@@ -17,12 +17,18 @@ import re
 from ..helpers.pdf_manager import PDFManager
 import os
 from collections import defaultdict
-
+from ..config import Config
+import base64
+import uuid
 
 user_requests = defaultdict(int) 
 MAX_REQUESTS_PER_DAY = 5 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 bp = Blueprint('booking', __name__)
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route('/parse', methods=['GET'])
 def parse_page():
@@ -49,31 +55,16 @@ def parse_data():
             }), 429
         user_requests[ip_address] += 1
     if request.method == "POST":
-        global logo_path
         try:
             logo= request.form.get("logo_ticket")
-            print(logo)
             if logo == "vna":
                 logo_path = "vietnam-airline-logo.png"
             elif logo == "vietjet":
                 logo_path = "vietjet-logo.png"
             elif logo == "bamboo":
                 logo_path = "bamboo-logo.png"
-
-            image = request.files.get("image")
-            if image:
-                if allowed_file(image.filename):
-                    filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{image.filename}"
-                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    image.save(filepath)
-                    session['uploaded_image_path'] = filepath
-                    print("Session data on download_pdf:", session['uploaded_image_path'])
-                else:
-                    return jsonify({"error": "Ảnh tải lên không hợp lệ, chỉ chấp nhận các định dạng như .jpg, .png, .jpeg"}), 400
-            else:
-                session['uploaded_image_path'] = None
-                filename = None
-
+            session['logo_path'] = logo_path
+            filename = session.get('uploaded_image_path', None)
 
             form_data = request.form.get("data", "").replace("\r\n", "\n")
             data = f'"""{form_data}"""'
@@ -191,8 +182,7 @@ def parse_data():
             return jsonify({"error": "Lỗi xử lý dữ liệu"}), 500
 @bp.route("/download_pdf", methods=["POST"])
 def download_pdf():
-    global logo_path
-
+    logo_path = session.get('logo_path')
     booking_data = session.get('booking')
     data = request.get_json()
     passenger_name = data.get("passenger_name")
@@ -218,15 +208,15 @@ def download_pdf():
         flight1=global_booking.flight1,
         flight2=global_booking.flight2,
     )
-    print("Session data on download_pdf:", session)
     logo_user_path = session.get('uploaded_image_path')
-    print("Logo user path:",logo_user_path)
     logo_user_base64 = None
-
-    if logo_user_path and os.path.exists(logo_user_path):
-        with open(logo_user_path, "rb") as logo_file:
-            logo_user_base64 = base64.b64encode(logo_file.read()).decode('utf-8')
-    # print(logo_user_base64)
+    if logo_user_path:
+        app_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        logo_user_full_path = os.path.join(app_root, 'app','static', 'uploads', logo_user_path)
+        
+        if os.path.exists(logo_user_full_path):
+            with open(logo_user_full_path, "rb") as logo_file:
+                logo_user_base64 = base64.b64encode(logo_file.read()).decode('utf-8')
     pdf_path = PDFManager.print_pdf(filtered_booking, passenger_name, logo_path, selected_fields, logo_user_base64)
     with open(pdf_path, "rb") as f:
         pdf_data = f.read()
@@ -245,13 +235,21 @@ def download_pdf():
     return response
 @bp.route("/download_all_pdf", methods=["POST"])
 def download_all_pdf():
-    global logo_path
+    logo_path = session.get('logo_path')
     booking_data = session.get('booking')
     global_booking = Booking.from_dict(booking_data)
     data = request.get_json()
     selected_fields = data.get("selected_fields", [])
-    logo_user = session.get('uploaded_image_base64')
-    zip_path = PDFManager.create_all_pdfs(global_booking, logo_path, selected_fields, logo_user)
+    logo_user_path = session.get('uploaded_image_path')
+    logo_user_base64 = None
+    if logo_user_path:
+        app_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        logo_user_full_path = os.path.join(app_root, 'app','static', 'uploads', logo_user_path)
+        
+        if os.path.exists(logo_user_full_path):
+            with open(logo_user_full_path, "rb") as logo_file:
+                logo_user_base64 = base64.b64encode(logo_file.read()).decode('utf-8')
+    zip_path = PDFManager.create_all_pdfs(global_booking, logo_path, selected_fields, logo_user_base64)
     print(zip_path)
 
     return send_file(
@@ -260,3 +258,37 @@ def download_all_pdf():
         as_attachment=True,
         download_name='all_tickets.zip',
     )
+@bp.route('/upload_custom_logo', methods=['POST'])
+def upload_custom_logo():
+    try:
+        data = request.get_json()
+        base64_image = data.get('image')
+
+        if not base64_image:
+            return jsonify({'error': 'Không có dữ liệu ảnh'}), 400
+
+        header, encoded = base64_image.split(',', 1)
+        image_data = base64.b64decode(encoded)
+
+        upload_folder = Config.UPLOAD_FOLDER
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'Chưa đăng nhập, không thể tải lên logo'}), 403
+
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        unique_filename = f"{user_id}_{timestamp}_{str(uuid.uuid4())}.jpg"
+        print("Tên filename là", unique_filename)
+
+        file_path = os.path.join(upload_folder, unique_filename)
+        with open(file_path, 'wb') as f:
+            f.write(image_data)
+        session['uploaded_image_path'] = unique_filename
+
+        return jsonify({'success': True, 'message': 'File đã được tải lên thành công', 'file_path': unique_filename}), 200
+
+    except Exception as e:
+        print(f"Lỗi: {str(e)}")
+        return jsonify({'error': 'Đã xảy ra lỗi trên server', 'details': str(e)}), 500
+
