@@ -26,12 +26,15 @@ class PDFManager:
         formatted_flight1_departure_time = flight1_departure_time.upper()
 
         flight1_departure_unmap = abbreviated_place_name(booking.flight1.departure_place)
+        print("Gia tri flight1 chua map", flight1_departure_unmap)
         flight1_departure_mapped = abbreviate_airport_name(flight1_departure_unmap)
+        print("Gia tri flight1 da map", flight1_departure_mapped)
         flight1_arrival_unmap = abbreviated_place_name(booking.flight1.arrival_place)
         flight1_arrival_mapped = abbreviate_airport_name(flight1_arrival_unmap)
         flight1_abbreviation = f"{flight1_departure_mapped}{flight1_arrival_mapped}"
-        flight2_abbreviation = ""
 
+        flight2_abbreviation = ""
+        formatted_flight2_departure_time =""
         if booking.flight2:
             flight2_departure_time = booking.flight2.departure_time.split(',')[1].strip()
             flight2_departure_time = flight2_departure_time.replace(" ", "")
@@ -43,9 +46,9 @@ class PDFManager:
             # if flight1_arrival_mapped == flight2_departure_mapped:
             #     flight2_abbreviation = f"{flight2_arrival_mapped}"
             # else:
-            flight2_abbreviation = f"{flight2_departure_mapped}{flight2_arrival_mapped}"
+            flight2_abbreviation = f"_{flight2_departure_mapped}{flight2_arrival_mapped}"
 
-        pdf_filename = f"{passenger_name_for_filename}_{formatted_flight1_departure_time}_{flight1_abbreviation}_{formatted_flight2_departure_time}_{flight2_abbreviation}.pdf"
+        pdf_filename = f"{passenger_name_for_filename}_{formatted_flight1_departure_time}_{flight1_abbreviation}_{formatted_flight2_departure_time}{flight2_abbreviation}.pdf"
         
         return pdf_filename
 

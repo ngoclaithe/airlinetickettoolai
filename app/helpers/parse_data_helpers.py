@@ -115,9 +115,10 @@ def extract_flight_info(data):
 def abbreviated_place_name(place):
     if place.strip().upper() == "HANOI, VN (NOI BAI INTL)":
         return "HN"
+    if place.strip().upper() == "TUY HOA, VN (DONG TAC)":
+        return "TUYHOA"
     parts = place.strip().split(",")[0].strip().split()
-    abbreviation = ''.join([part[0].upper() for part in parts])
-    
+    abbreviation = ''.join([part[0].upper() for part in parts])   
     return abbreviation
 def abbreviate_airport_name(input_str):
     airport_codes = {
@@ -135,12 +136,12 @@ def abbreviate_airport_name(input_str):
         "DB": "DIN",
         "DH": "VDH",
         "HP": "HPH",
-        "H": "HUI",
-        "PLEIKU": "PXU",
+        "HUE": "HUI",
+        "P": "PXU",
         "QN": "UIH",
         "RG": "VKG",
         "TH": "THD",
-        # "TUYHOA": "TBB",
+        "TUYHOA": "TBB",
         "VD": "VDO",
         "V": "VII"
     }
