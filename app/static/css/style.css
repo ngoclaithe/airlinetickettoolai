@@ -205,7 +205,8 @@ margin-bottom: 20px;
 .download-btn:hover {
     background-color: #45a049; 
 }
-.read-only-checkbox {
-    opacity: 0.5; 
-    pointer-events: none; 
+.no-user .select-checkbox {
+    opacity: 0.2;
+    cursor: not-allowed;
+    pointer-events: none;
 }

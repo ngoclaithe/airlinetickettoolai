@@ -19,7 +19,7 @@
     {% if user_id %}
     {% include 'sidebar.html' %}
     {% endif %}
-    <div class="container">
+    <div class="container {% if not user_id %}no-user{% endif %} ">
         <div class="left-side">
             <h2>Input Booking Data</h2>
             <form id="myForm" onsubmit="updateBookingData(event)" class="mb-4">
@@ -84,13 +84,20 @@
                     <td>Reservation Status</td>
                     <td id="reservation_status">{{ booking.reservation_status }}</td>
                     <td></td>
-                    <td>
+                    <!-- <td>
                         <input 
                             type="checkbox" 
                             class="select-checkbox" 
                             value="reservation_status" 
                             checked 
                             {% if not user_id %}onclick="return false;"{% endif %}>
+                    </td> -->
+                    <td>
+                        <input 
+                            type="checkbox" 
+                            class="select-checkbox" 
+                            value="reservation_status" 
+                            checked>
                     </td>
                 </tr>
                 <tr>
