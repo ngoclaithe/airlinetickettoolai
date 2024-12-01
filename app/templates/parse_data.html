@@ -38,7 +38,7 @@
             </form>
             {% if user_id %}
             <div class="upload-logo mt-4">
-                <label for="imageUpload" class="form-label">Upload logo Bên Phải</label>
+                <label for="imageUpload" class="form-label">Upload Your Logo</label>
                 <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none;">
                 <button 
                     type="button" 
@@ -86,7 +86,9 @@
                     <td>Reservation Status</td>
                     <td id="reservation_status">{{ booking.reservation_status }}</td>
                     <td></td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="reservation_status" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Ticket</td>
@@ -105,7 +107,9 @@
                     <td>Flight 1</td>
                     <td id="flight1_des">{{ booking.flight1.des }}</td>
                     <td id="flight1_des_time">{{ booking.flight1.des_time }}</td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight1_des" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Departure</td>
@@ -116,7 +120,9 @@
                         {% endif %}
                     </td>
                     <td id="flight1_departure_time">{{ booking.flight1.departure_time }}</td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight1_departure_place" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Arrival</td>
@@ -127,13 +133,17 @@
                         {% endif %}
                     </td>
                     <td id="flight1_arrival_time">{{ booking.flight1.arrival_time }}</td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight1_arrival_place" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Duration</td>
                     <td id="flight1_duration">{{ booking.flight1.duration }}</td>
                     <td></td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight1_duration" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Baggage</td>
@@ -147,8 +157,9 @@
                     <td>Meal</td>
                     <td id="flight1_meal">{{ booking.flight1.meal }}</td>
                     <td></td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight1_meal" checked></td>
-
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Non-stop</td>
@@ -162,24 +173,27 @@
                     <td>Equipment</td>
                     <td id="flight1_equipment">{{ booking.flight1.equipment }}</td>
                     <td></td>
+                    {% if user_id %} 
                     <td><input type="checkbox" class="select-checkbox" value="flight1_equipment" checked></td>
-
+                    {% endif %}
                 </tr>
-                {% if user_id %} 
+
                 <tr>
                     <td>Economy</td>
                     <td id="flight1_economy_class">{{ booking.flight1.economy_class }}</td>
                     <td></td>
+                    {% if user_id %} 
                     <td><input type="checkbox" class="select-checkbox" value="flight1_economy_class" checked></td>
-
+                    {% endif %}
                 </tr>
-                {% endif %}
+                
                 <tr>
                     <td>Flight 2</td>
                     <td id="flight2_des">{{ booking.flight2.des }}</td>
                     <td id="flight2_des_time">{{ booking.flight2.des_time }}</td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight2_des" checked></td>
-
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Departure</td>
@@ -190,7 +204,9 @@
                         {% endif %}
                     </td>
                     <td id="flight2_departure_time">{{ booking.flight2.departure_time }}</td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight2_departure_place" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Arrival</td>
@@ -201,13 +217,17 @@
                         {% endif %}
                     </td>
                     <td id="flight2_arrival_time">{{ booking.flight2.arrival_time }}</td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight2_arrival_place" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Duration</td>
                     <td id="flight2_duration">{{ booking.flight2.duration }}</td>
                     <td></td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight2_duration" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Baggage</td>
@@ -220,7 +240,9 @@
                     <td>Meal</td>
                     <td id="flight2_meal">{{ booking.flight2.meal }}</td>
                     <td></td>
+                    {% if user_id %}
                     <td><input type="checkbox" class="select-checkbox" value="flight2_meal" checked></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Non-stop</td>
@@ -233,16 +255,20 @@
                     <td>Equipment</td>
                     <td id="flight2_equipment">{{ booking.flight2.equipment }}</td>
                     <td></td>
+                    {% if user_id %} 
                     <td><input type="checkbox" class="select-checkbox" value="flight2_equipment" checked></td>
+                    {% endif %}
                 </tr>
-                {% if user_id %} 
+
                 <tr>
                     <td>Economy</td>
                     <td id="flight2_economy_class">{{ booking.flight2.economy_class }}</td>
                     <td></td>
+                    {% if user_id %} 
                     <td><input type="checkbox" class="select-checkbox" value="flight2_economy_class" checked></td>
+                    {% endif %}
                 </tr>
-                {% endif %}
+
             </table>
             {% else %}
             <p>No booking data parsed yet.</p>
