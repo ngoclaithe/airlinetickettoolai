@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from ..models.flight import Flight
 from ..models.booking import Booking
 from ..models.register import Register
+from ..models.subscriptions import Subscription
 from ..helpers.parse_data_helpers import (
     parse_description,
     parse_departure,
@@ -54,6 +55,16 @@ def parse_data():
                 "redirect": url_for("auth_blueprint.login_page")
             }), 429
         user_requests[ip_address] += 1
+    else:
+        user_id = session.get("user_id")
+        if not Subscription.is_registered(user_id): 
+            return jsonify({
+                "error": "Gói đăng ký của bạn đã hết hạn hoặc bạn chưa đăng ký",
+            }), 403
+        return jsonify({
+            "success": True,
+            "message": "Request data parsed successfully"
+        }), 200
     if request.method == "POST":
         try:
             logo= request.form.get("logo_ticket")

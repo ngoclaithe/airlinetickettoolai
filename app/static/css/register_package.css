@@ -1,0 +1,142 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 20px;
+}
+
+.card {
+    width: 300px;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    border-radius: 10px;
+    box-shadow: 6px 6px 12px #d9d9d9, -6px -6px 12px #ffffff;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 12px 12px 24px #d1d1d1, -12px -12px 24px #ffffff;
+}
+
+.card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+    text-align: center;
+    width: 100%;
+}
+
+.price {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-content {
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-header .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.modal-header .close:hover {
+    opacity: 1;
+}
+
+.modal-title {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: #090605;
+}
+
+.modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-body .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-body .form-control {
+    min-height: 50px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.modal-footer {
+    border-top: none;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-footer .btn {
+    margin: 0 10px;
+    margin-right: 40%;
+}
+
+#qrCodeContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#qrCodeContainer img {
+    max-width: 250px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

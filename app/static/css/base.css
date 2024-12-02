@@ -110,3 +110,18 @@ input[type="submit"] {
 .upload-logo .btn {
     align-self: flex-start; 
 }
+.toast-success {
+    background-color: #28a745 !important; 
+}
+
+.toast-error {
+    background-color: #dc3545 !important; 
+}
+
+.toast-warning {
+    background-color: #ffc107 !important; 
+}
+
+.toast-info {
+    background-color: #17a2b8 !important;
+}

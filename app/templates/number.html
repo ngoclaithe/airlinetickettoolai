@@ -16,44 +16,125 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .form-container {
-            margin-top: 20px;
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
-        .form-container .form-group label {
-            font-weight: bold;
+    
+        .form-container:hover {
+            transform: translateY(-5px);
         }
-        .form-container textarea, .form-container input {
-            border-radius: 5px;
-            border: 1px solid #ced4da;
-            box-shadow: none;
-            padding: 10px;
+    
+        .form-container h2 {
+            color: #007bff;
+            margin-bottom: 25px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
         }
+    
+        .form-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 50px;
+            height: 3px;
+            background-color: #007bff;
+            transform: translateX(-50%);
+        }
+    
         .form-container textarea {
-            min-height: 120px;
+            min-height: 150px;
             resize: vertical;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
+    
+        .form-container textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+    
+        .form-container textarea:hover {
+            border-color: #6c757d;
+        }
+    
+        .form-container input[type="text"] {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+    
+        .form-container input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+    
         .form-container input[type="submit"] {
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
+            border-radius: 10px;
+            padding: 12px 25px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
         }
+    
         .form-container input[type="submit"]:hover {
             background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 86, 179, 0.4);
         }
+    
+        .form-container input[type="submit"]:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 86, 179, 0.3);
+        }
+    
+        .form-check {
+            margin-bottom: 10px;
+        }
+    
+        .form-check-input:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    
         .container {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
+    
         .container .left-side, .container .right-side {
             flex: 1;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+    
+        .container .left-side:hover, .container .right-side:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
     </style>
 </head>
@@ -64,7 +145,6 @@
     {% include 'sidebar.html' %}
     {% endif %}
     <div class="container">
-        <!-- Left Side: Number to Text Form -->
         <div class="left-side form-container">
             <h2 class="text-center">Chuyển số sang chữ</h2>
             <form id="myFormNumber" onsubmit="updateNumberToTextData(event)">
@@ -80,7 +160,6 @@
             </div>
         </div>
 
-        <!-- Right Side: VAT Calculation Form -->
         <div class="right-side form-container">
             <h2 class="text-center">Tính VAT</h2>
             <form id="myFormVAT" onsubmit="updateVATData(event)">

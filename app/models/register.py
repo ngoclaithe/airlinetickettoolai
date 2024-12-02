@@ -10,6 +10,7 @@ class Register(db.Model):
     secret_question = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(255), nullable=True)
 
+    subscriptions = db.relationship('Subscription', back_populates='user')
     def add_register(self):
         db.session.add(self)
         db.session.commit()

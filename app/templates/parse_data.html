@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Parser</title>
     <link rel="stylesheet" href="../../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/account.css">
     <link rel="stylesheet" href="../../static/css/base.css">
     <link rel="stylesheet" href="../../static/css/sidenav.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
@@ -27,7 +26,7 @@
                     <textarea name="data" id="bookingData" placeholder="Enter booking data here..."></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="logo_ticket">Logo hãng máy bay</label>
+                    <label for="logo_ticket">Choose airline logo</label>
                     <select name="logo_ticket" id="logo_ticket">
                         <option value="vna" selected>VietNam Airlines</option>
                         <option value="bamboo">Bamboo Airway</option>
@@ -374,10 +373,30 @@
 
     </div>
     <div id="ticket-details"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.fonts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         const user_id = "{{ user_id }}";
-        console.log(user_id);
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
         const loginUrl = "{{ url_for('auth_blueprint.login') }}";
 
         async function updateBookingData(event) {
@@ -401,10 +420,11 @@
                     console.log("Gia tri của chuyển hướng", errorData.redirect);
                     window.location.href = errorData.redirect;
                 } else {
-                    alert('Error fetching data');
+                    toastr.error(errorData.error || 'Có lỗi xảy ra', 'Lỗi');
                 }
             }
         }
+        
         async function updateBookingTable(booking) {
             document.getElementById('booking_ref').textContent = booking.booking_ref;
 

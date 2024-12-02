@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overview Admin</title>
+    <title>Thông Tin Thanh Toán</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../../static/css/overview.css">
@@ -18,26 +17,30 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-
         .table-responsive {
             margin-top: 20px;
         }
-
         .action-btn {
             margin-left: 5px;
         }
     </style>
 </head>
-
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" href="/admin/infopayment">Thông Tin Thanh Toán</a>
+            <a class="nav-item nav-link" href="/admin/infopackage">Thông Tin Gói</a>
+            <a class="nav-item nav-link" href="/admin/subscription">Thông Tin Đăng ký Gói</a>
+        </div>
+    </nav>
+
     <div class="container-fluid">
         <div class="row row-card">
             <main class="col-md-12">
-                <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Payment Information</h1>
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Thông Tin Thanh Toán</h1>
                     <button class="btn btn-primary" data-toggle="modal" data-target="#addPaymentModal">
-                        <i class="fas fa-plus"></i> Add Payment Info
+                        <i class="fas fa-plus"></i> Thêm Thông Tin Thanh Toán
                     </button>
                 </div>
 
@@ -45,10 +48,10 @@
                     <table class="table table-striped table-sm" id="paymentInfoTable">
                         <thead>
                             <tr>
-                                <th>Bank Account Number</th>
-                                <th>Bank Account Name</th>
-                                <th>Bank</th>
-                                <th>Actions</th>
+                                <th>Số Tài Khoản Ngân Hàng</th>
+                                <th>Tên Tài Khoản Ngân Hàng</th>
+                                <th>Ngân Hàng</th>
+                                <th>Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody id="paymentInfoBody">
@@ -57,31 +60,12 @@
                 </div>
             </main>
         </div>
-        <div class="row row-card">
-            <main class="col-md-12">
-                <h2>Package Information</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm" id="packageTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Package Name</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="packageBody"></tbody>
-                    </table>
-                </div>
-            </main>
-        </div>
     </div>
-    <div class="modal fade" id="addPaymentModal" tabindex="-1" role="dialog" aria-labelledby="addPaymentModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="addPaymentModal" tabindex="-1" role="dialog" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPaymentModalLabel">Add Payment Information</h5>
+                    <h5 class="modal-title" id="addPaymentModalLabel">Thêm Thông Tin Thanh Toán</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -89,26 +73,27 @@
                 <div class="modal-body">
                     <form id="addPaymentForm">
                         <div class="form-group">
-                            <label for="bankAccountNumber">Bank Account Number</label>
+                            <label for="bankAccountNumber">Số Tài Khoản Ngân Hàng</label>
                             <input type="text" class="form-control" id="bankAccountNumber" required>
                         </div>
                         <div class="form-group">
-                            <label for="bankAccountName">Bank Account Name</label>
+                            <label for="bankAccountName">Tên Tài Khoản Ngân Hàng</label>
                             <input type="text" class="form-control" id="bankAccountName" required>
                         </div>
                         <div class="form-group">
-                            <label for="bank">Bank</label>
+                            <label for="bank">Ngân Hàng</label>
                             <input type="text" class="form-control" id="bank" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="savePaymentInfo">Save Payment Info</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="savePaymentInfo">Lưu Thông Tin</button>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -127,7 +112,7 @@
                                 <td>${payment.bank}</td>
                                 <td>
                                     <button class="btn btn-sm btn-danger delete-payment" data-account-number="${payment.bank_account_number}">
-                                        <i class="fas fa-trash"></i> Delete
+                                        <i class="fas fa-trash"></i> Xóa
                                     </button>
                                 </td>
                             </tr>
@@ -143,8 +128,8 @@
                     });
                 })
                 .catch(error => {
-                    console.error('Error fetching payment information:', error);
-                    alert('Failed to fetch payment information');
+                    console.error('Lỗi tải thông tin thanh toán:', error);
+                    alert('Không thể tải thông tin thanh toán');
                 });
         }
 
@@ -166,18 +151,18 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    alert('Payment information added successfully');
+                    alert('Đã thêm thông tin thanh toán thành công');
                     $('#addPaymentModal').modal('hide');
                     fetchPaymentInfo();
                 })
                 .catch(error => {
-                    console.error('Error adding payment information:', error);
-                    alert('Failed to add payment information');
+                    console.error('Lỗi thêm thông tin thanh toán:', error);
+                    alert('Không thể thêm thông tin thanh toán');
                 });
         });
 
         function deletePaymentInfo(accountNumber) {
-            if (confirm(`Are you sure you want to delete payment info for account number ${accountNumber}?`)) {
+            if (confirm(`Bạn có chắc muốn xóa thông tin thanh toán cho số tài khoản ${accountNumber}?`)) {
                 fetch('/delete_info_payment', {
                     method: 'POST',
                     headers: {
@@ -189,63 +174,17 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        alert('Payment information deleted successfully');
+                        alert('Đã xóa thông tin thanh toán thành công');
                         fetchPaymentInfo();
                     })
                     .catch(error => {
-                        console.error('Error deleting payment information:', error);
-                        alert('Failed to delete payment information');
+                        console.error('Lỗi xóa thông tin thanh toán:', error);
+                        alert('Không thể xóa thông tin thanh toán');
                     });
             }
         }
 
         document.addEventListener('DOMContentLoaded', fetchPaymentInfo);
-        function fetchPackages() {
-            fetch('/get_all_package')
-                .then(response => response.json())
-                .then(data => {
-                    const packageBody = document.getElementById('packageBody');
-                    packageBody.innerHTML = '';
-                    data.forEach(pkg => {
-                        const row = `
-                            <tr>
-                                <td>${pkg.id}</td>
-                                <td>${pkg.name_package}</td>
-                                <td><input type="number" value="${pkg.price}" class="form-control package-price" data-id="${pkg.id}" /></td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm action-btn update-package" data-id="${pkg.id}">Update Price</button>
-                                </td>
-                            </tr>`;
-                        packageBody.innerHTML += row;
-                    });
-
-                    document.querySelectorAll('.update-package').forEach(button => {
-                        button.addEventListener('click', function () {
-                            const id = this.getAttribute('data-id');
-                            const priceInput = document.querySelector(`input.package-price[data-id="${id}"]`);
-                            const price = priceInput.value;
-                            console.log(JSON.stringify({ id, price }));
-
-                            fetch('/update_package', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id, price }),
-                            })
-                                .then(response => response.json())
-                                .then(data => alert('Price updated successfully!'))
-                                .catch(error => console.error(error));
-                        });
-                    });
-                });
-        }
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchPackages();
-        });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
 </body>
-
 </html>
