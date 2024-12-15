@@ -55,16 +55,13 @@ def parse_data():
                 "redirect": url_for("auth_blueprint.login_page")
             }), 429
         user_requests[ip_address] += 1
-    else:
+    if is_logged_in:
         user_id = session.get("user_id")
         if not Subscription.is_registered(user_id): 
             return jsonify({
                 "error": "Gói đăng ký của bạn đã hết hạn hoặc bạn chưa đăng ký",
+                "redirect": url_for("register_package.register_menu")
             }), 403
-        return jsonify({
-            "success": True,
-            "message": "Request data parsed successfully"
-        }), 200
     if request.method == "POST":
         try:
             logo= request.form.get("logo_ticket")

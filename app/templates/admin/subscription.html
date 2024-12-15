@@ -77,18 +77,20 @@
                     data.forEach(sub => {
                         const startDate = formatDate(sub.start_date);
                         const endDate = formatDate(sub.end_date);
+                        const acceptButton = sub.status === "success"
+                            ? ""
+                            : `<button class="btn btn-success btn-sm action-btn accept-subscription" data-code="${sub.code_paymment}">Accept</button>`;
+
                         const row = `
-                            <tr>
-                                <td>${sub.id}</td>
-                                <td>${sub.user_id}</td>
-                                <td>${startDate}</td>
-                                <td>${endDate}</td>
-                                <td>${sub.status}</td>
-                                <td>${sub.code_paymment}</td>
-                                <td>
-                                    <button class="btn btn-success btn-sm action-btn accept-subscription" data-code="${sub.code_paymment}">Accept</button>
-                                </td>
-                            </tr>`;
+                        <tr>
+                            <td>${sub.id}</td>
+                            <td>${sub.user_id}</td>
+                            <td>${startDate}</td>
+                            <td>${endDate}</td>
+                            <td>${sub.status}</td>
+                            <td>${sub.code_paymment}</td>
+                            <td>${acceptButton}</td>
+                        </tr>`;
                         subscriptionBody.innerHTML += row;
                     });
 

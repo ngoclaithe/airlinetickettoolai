@@ -426,6 +426,7 @@
         }
         
         async function updateBookingTable(booking) {
+            console.log("Gia tri data", booking);
             document.getElementById('booking_ref').textContent = booking.booking_ref;
 
             const passengerNameList = document.getElementById('passenger_name');
