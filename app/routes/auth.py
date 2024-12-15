@@ -46,13 +46,18 @@ def logout():
 @bp.route("/register", methods=["POST"])
 def register_account():
     try:
-        data = request.json
+        data = request.get_json()  
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
         user = data.get("user")
         email = data.get("email")
         password = data.get("password")
-        usertype = data.get("usertype")
         secret_question = data.get("secret_question")
         phone = data.get("phone")
+
+        if not all([user, email, password, secret_question, phone]):
+            return jsonify({"error": "Missing required fields"}), 400
 
         if Register.find_by_email(email):
             return jsonify({"error": "Email đã được sử dụng"}), 400
@@ -62,12 +67,13 @@ def register_account():
             user=user,
             email=email,
             password=hashed_password,
-            usertype=usertype,
+            usertype="guest",
             secret_question=secret_question,
             phone=phone
         )
         new_user.add_register()
+
         return jsonify({"message": "Tạo tài khoản thành công"}), 201
+
     except Exception as e:
-        # db.session.rollback()
         return jsonify({"error": str(e)}), 500

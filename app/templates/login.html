@@ -39,7 +39,7 @@
         }
 
         .box {
-            margin-top: 150px;
+            margin-top: 0px;
             display: flex;
             flex-direction: row;
             position: relative;
@@ -334,13 +334,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="input-field">
-                        <select id="regUsertype" class="input-box" required>
-                            <option value="nhanvienkho">Nhân viên kho</option>
-                            <option value="nhanvienbanhang">Nhân viên bán hàng</option>
-                            <option value="thuquy">Thủ quỹ</option>
-                        </select>
-                    </div>
                     <div class="remember">
                         <input type="checkbox" id="formCheck2" class="check">
                         <label for="formCheck2">Remember Me</label>
@@ -349,6 +342,11 @@
                         <input type="submit" class="input-submit" value="Sign Up" required onclick="register()">
                     </div>
                 </div>
+            </div>
+            <div class="switch">
+                <a href="#" class="login active" onclick="loginView()">Login</a>
+                <a href="#" class="register" onclick="registerView()">Register</a>
+                <div class="btn-active" id="btn"></div>
             </div>
         </div>
     </div>
@@ -443,30 +441,38 @@
                 })
                 .catch(error => console.error('Error:', error));
         }
-
         function register() {
-            var email = document.getElementById('regUsername').value;
-            var password = document.getElementById('regPassword').value;
-            var user = document.getElementById('regUser').value;
-            var secretQuestion = document.getElementById('regSecretQuestion').value;
-            var usertype = document.getElementById('regUsertype').value;
-            var phone = document.getElementById('regPhone').value;
+            const email = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const user = document.getElementById('regUser').value;
+            const secretQuestion = document.getElementById('regSecretQuestion').value;
+            const phone = document.getElementById('regPhone').value;
+
             fetch('/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `user=${encodeURIComponent(user)}&email=${encodeURIComponent(email)}&secretquestion=${encodeURIComponent(secretQuestion)}&password=${encodeURIComponent(password)}&usertype=${encodeURIComponent(usertype)}&phone=${encodeURIComponent(phone)}`
+                body: JSON.stringify({
+                    user: user,
+                    email: email,
+                    password: password,
+                    secret_question: secretQuestion,
+                    phone: phone,
+                }),
             })
-                .then(response => response.text())
-                .then(text => {
-                    if (text) {
-                        toastr.info(text);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        toastr.info(data.message);
                         loginView();
+                    } else if (data.error) {
+                        toastr.error(data.error);
                     }
                 })
                 .catch(error => console.error('Error:', error));
         }
+
 
         document.addEventListener('DOMContentLoaded', function () {
             var savedUsername = localStorage.getItem('savedUsername');
