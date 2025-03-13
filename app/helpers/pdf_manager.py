@@ -65,18 +65,18 @@ class PDFManager:
         template_dir = os.path.join(current_dir, '..')  
         template_name = 'template_ticket.html'  
         template_path = os.path.join(template_dir, template_name)
-
-        html_content = PDFManager.render_pdf_template(template_path, booking, logo_base64, selected_fields,logo_user=logo_user )
+        print("Đây là giá trị booking.passenger_name",booking.passenger_name)
+        html_content = PDFManager.render_pdf_template(template_path, booking, logo_base64, selected_fields,logo_user=logo_user, passenger_name=passenger_name )
 
         HTML(string=html_content).write_pdf(pdf_path)
 
         return pdf_path
 
     @staticmethod
-    def render_pdf_template(template_path, booking, logo_base64, selected_fields=None, logo_user=None ):
+    def render_pdf_template(template_path, booking, logo_base64, selected_fields=None, logo_user=None, passenger_name=None ):
         env = Environment(loader=FileSystemLoader(os.path.dirname(template_path))) 
         template = env.get_template(os.path.basename(template_path))
-        return template.render(booking=booking, logo_base64= logo_base64, selected_fields=selected_fields, logo_user=logo_user)
+        return template.render(booking=booking, logo_base64= logo_base64, selected_fields=selected_fields, logo_user=logo_user, passenger_name=passenger_name)
 
     @staticmethod
     def update_flight_times(booking):
