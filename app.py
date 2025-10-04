@@ -1,6 +1,6 @@
 from app import create_app
+from asgiref.wsgi import WsgiToAsgi
 
-app = create_app()
+flask_app = create_app()
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+app = WsgiToAsgi(flask_app)
